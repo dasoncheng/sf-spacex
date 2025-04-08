@@ -5,10 +5,66 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"] // 启用扩展支持
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgcrypto] // 添加 pgcrypto 扩展
+}
+
+// 用户模型
+model User {
+  Id        String   @id @default(uuid()) // 用户的唯一标识符，UUID格式
+  Email     String   @unique // 用户邮箱，唯一，用于登录和联系
+  Password  String // 用户密码，需加密存储
+  CreatedAt DateTime @default(now()) @db.Timestamptz(6) // 记录用户创建时间，带时区
+  UpdatedAt DateTime @updatedAt @db.Timestamptz(6) // 记录用户信息的最后更新时间，带时区
+
+  // 关联
+  Activations Activation[] // 用户的激活记录，表示用户激活的应用
+}
+
+// 应用模型
+model Application {
+  Id          String   @id @default(uuid()) // 应用的唯一标识符，UUID格式
+  Name        String // 应用名称，用于标识应用
+  Description String? // 应用描述，可选，提供额外信息
+  AppKey      String   @unique // 应用的唯一密钥，用于验证
+  CreatedAt   DateTime @default(now()) @db.Timestamptz(6) // 记录应用创建时间，带时区
+  UpdatedAt   DateTime @updatedAt @db.Timestamptz(6) // 记录应用信息的最后更新时间，带时区
+
+  Activation Activation[] // 应用的激活记录，表示哪些用户激活了该应用
+}
+
+// 卡密/许可证模型
+model License {
+  Id         String   @id @default(uuid()) // 许可证的唯一标识符，UUID格式
+  LicenseKey String   @unique // 许可证密钥，34位字符串，唯一
+  IsUsed     Boolean  @default(false) // 标记许可证是否已被使用
+  Days       Int // 激活时长（以天为单位）
+  CreatedAt  DateTime @default(now()) @db.Timestamptz(6) // 记录许可证创建时间，带时区
+  UpdatedAt  DateTime @updatedAt @db.Timestamptz(6) // 记录许可证信息的最后更新时间，带时区
+
+  Activation Activation? // 许可证的激活记录，表示该许可证是否已被使用
+}
+
+// 激活记录模型
+model Activation {
+  Id          String    @id @default(uuid()) // 激活记录的唯一标识符，UUID格式
+  Fingerprint String // 设备指纹，用于标识激活的设备
+  ActivatedAt DateTime  @default(now()) @db.Timestamptz(6) // 激活时间，记录激活发生的时间，带时区
+  ExpiresAt   DateTime? @db.Timestamptz(6) // 激活的过期时间，可选，带时区
+
+  // 关联关系
+  UserId String // 用户ID，表示激活记录属于哪个用户
+  User   User   @relation(fields: [UserId], references: [Id]) // 关联的用户，外键引用 User 表的 Id
+
+  ApplicationId String // 应用ID，表示激活记录属于哪个应用
+  Application   Application @relation(fields: [ApplicationId], references: [Id]) // 关联的应用，外键引用 Application 表的 Id
+
+  LicenseId String  @unique // 许可证/卡密ID，表示激活使用的许可证
+  License   License @relation(fields: [LicenseId], references: [Id]) // 使用的许可证，外键引用 License 表的 Id
 }
