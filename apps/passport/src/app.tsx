@@ -1,11 +1,8 @@
 import { defineComponent } from "vue";
+import { RouterView } from "vue-router";
 
 export const App = defineComponent({
   setup() {
-    return () => (
-      <div class="h-screen w-screen flex items-center justify-center bg-gray-100">
-        <div class="text-3xl text-red-500">Hello, Vite + Vue 3 + UnoCSS!</div>
-      </div>
-    );
+    return () => <RouterView />;
   },
 });

@@ -36,6 +36,14 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
+
+  /* Compact layout variables */
+  --spacing-compact: 0.5rem;
+  --padding-compact: 0.75rem;
+  --margin-compact: 0.5rem;
+  --gap-compact: 0.5rem;
+  --font-size-compact: 0.875rem;
+  --line-height-compact: 1.25;
 }
 
 .dark {
@@ -71,6 +79,19 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.274 0.006 286.033);
   --sidebar-ring: oklch(0.442 0.017 285.786);
+}
+
+.compact {
+  font-size: var(--font-size-compact);
+  line-height: var(--line-height-compact);
+}
+
+.compact .card,
+.compact .input,
+.compact .button {
+  padding: var(--padding-compact);
+  margin: var(--margin-compact);
+  gap: var(--gap-compact);
 }
 
 @theme inline {
@@ -110,6 +131,12 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Compact theme variables */
+  --size-compact-padding: var(--padding-compact);
+  --size-compact-margin: var(--margin-compact);
+  --size-compact-gap: var(--gap-compact);
+  --size-compact-font: var(--font-size-compact);
 }
 
 @layer base {
@@ -117,6 +144,26 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+
+  /* Compact styles */
+  .compact * {
+    @apply transition-all duration-200;
+  }
+
+  /* Support for dark mode toggle animation */
+  .theme-transition {
+    @apply transition-colors duration-300;
+  }
+}
+
+@layer utilities {
+  .layout-compact {
+    @apply space-y-2 p-2;
+  }
+
+  .layout-default {
+    @apply space-y-4 p-4;
   }
 }
