@@ -1,7 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { BatchCreateLicenseDto, CreateLicenseDto, LicenseDetailDto, LicenseResponseDto } from './dto/license.dto';
+import {
+  BatchCreateLicenseDto,
+  CreateLicenseDto,
+  LicenseDetailDto,
+  LicenseResponseDto,
+} from './dto/license.dto';
 import { customAlphabet } from 'nanoid';
+
+export const alphabet = customAlphabet('23456789ABCDEFGHJKLMNPQRSTUVWXYZ', 34);
 
 @Injectable()
 export class LicensesService {
@@ -9,12 +16,12 @@ export class LicensesService {
 
   // Generate a license key of 34 characters
   private generateLicenseKey(): string {
-    // Use only alphanumeric characters, excluding similar-looking characters
-    const nanoid = customAlphabet('23456789ABCDEFGHJKLMNPQRSTUVWXYZ', 34);
-    return nanoid();
+    return alphabet();
   }
 
-  async create(createLicenseDto: CreateLicenseDto): Promise<LicenseResponseDto> {
+  async create(
+    createLicenseDto: CreateLicenseDto,
+  ): Promise<LicenseResponseDto> {
     const licenseKey = this.generateLicenseKey();
 
     const license = await this.prisma.license.create({
@@ -24,11 +31,16 @@ export class LicensesService {
       },
     });
 
-    return license;
+    return {
+      ...license,
+      ExpiresAt: license.ExpiresAt || undefined,
+    };
   }
 
-  async batchCreate(batchCreateDto: BatchCreateLicenseDto): Promise<LicenseResponseDto[]> {
-    const licenses = [];
+  async batchCreate(
+    batchCreateDto: BatchCreateLicenseDto,
+  ): Promise<LicenseResponseDto[]> {
+    const licenses: LicenseResponseDto[] = [];
 
     // Create multiple licenses in a transaction
     await this.prisma.$transaction(async (prisma) => {
@@ -40,7 +52,10 @@ export class LicensesService {
             ExpiresAt: batchCreateDto.ExpiresAt,
           },
         });
-        licenses.push(license);
+        licenses.push({
+          ...license,
+          ExpiresAt: license.ExpiresAt || undefined,
+        });
       }
     });
 
@@ -48,7 +63,11 @@ export class LicensesService {
   }
 
   async findAll(): Promise<LicenseResponseDto[]> {
-    return this.prisma.license.findMany();
+    const licenses = await this.prisma.license.findMany();
+    return licenses.map((license) => ({
+      ...license,
+      ExpiresAt: license.ExpiresAt || undefined,
+    }));
   }
 
   async findOne(id: string): Promise<LicenseDetailDto> {
@@ -71,21 +90,24 @@ export class LicensesService {
     // Map to the expected format
     const result: LicenseDetailDto = {
       ...license,
-      activation: license.Activation ? {
-        Id: license.Activation.Id,
-        Fingerprint: license.Activation.Fingerprint,
-        ActivatedAt: license.Activation.ActivatedAt,
-        ExpiresAt: license.Activation.ExpiresAt,
-        user: {
-          Id: license.Activation.User.Id,
-          Email: license.Activation.User.Email,
-        },
-        application: {
-          Id: license.Activation.Application.Id,
-          Name: license.Activation.Application.Name,
-          AppKey: license.Activation.Application.AppKey,
-        },
-      } : undefined,
+      ExpiresAt: license.ExpiresAt || undefined,
+      activation: license.Activation
+        ? {
+            Id: license.Activation.Id,
+            Fingerprint: license.Activation.Fingerprint,
+            ActivatedAt: license.Activation.ActivatedAt,
+            ExpiresAt: license.Activation.ExpiresAt || undefined, // Convert null to undefined
+            user: {
+              Id: license.Activation.User.Id,
+              Email: license.Activation.User.Email,
+            },
+            application: {
+              Id: license.Activation.Application.Id,
+              Name: license.Activation.Application.Name,
+              AppKey: license.Activation.Application.AppKey,
+            },
+          }
+        : undefined,
     };
 
     return result;

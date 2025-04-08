@@ -1,14 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateApplicationDto, ApplicationResponseDto, ApplicationDetailDto } from './dto/application.dto';
-import { v4 as uuidv4 } from 'uuid';
+import {
+  CreateApplicationDto,
+  ApplicationResponseDto,
+  ApplicationDetailDto,
+} from './dto/application.dto';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class ApplicationsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createApplicationDto: CreateApplicationDto): Promise<ApplicationResponseDto> {
+  async create(
+    createApplicationDto: CreateApplicationDto,
+  ): Promise<ApplicationResponseDto> {
     // Generate a random app key
     const appKey = crypto.randomBytes(16).toString('hex');
 
@@ -44,7 +49,7 @@ export class ApplicationsService {
     }
 
     // Map activations to expected users format
-    const users = application.Activation.map(activation => ({
+    const users = application.Activation.map((activation) => ({
       Id: activation.User.Id,
       Email: activation.User.Email,
       activatedAt: activation.ActivatedAt,

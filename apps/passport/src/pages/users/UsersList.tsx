@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Edit, Trash2, ExternalLink } from "lucide-vue-next";
-import { applicationsService } from "@/services/applicationsService";
-import type { Application } from "@/types/api";
+import { usersService } from "@/services/usersService";
+import type { User } from "@/types/api";
 
-export const ApplicationsList = defineComponent({
-  name: "ApplicationsList",
+export const UsersList = defineComponent({
+  name: "UsersList",
   setup() {
     const router = useRouter();
-    const applications = ref<Application[]>([]);
+    const users = ref<User[]>([]);
     const loading = ref(true);
     const error = ref<string | null>(null);
 
@@ -26,50 +26,47 @@ export const ApplicationsList = defineComponent({
       return new Date(dateString).toLocaleString();
     };
 
-    // Navigate to application detail page
-    const viewApplicationDetails = (appId: string) => {
-      router.push(`/applications/${appId}`);
+    // Navigate to user detail page
+    const viewUserDetails = (userId: string) => {
+      router.push(`/users/${userId}`);
     };
 
-    // Load applications from API
-    const loadApplications = async () => {
+    // Load users from API
+    const loadUsers = async () => {
       try {
         loading.value = true;
-        applications.value = await applicationsService.getApplications();
+        users.value = await usersService.getUsers();
       } catch (err: any) {
-        error.value = err.message || "Failed to load applications";
-        console.error("Error loading applications:", err);
+        error.value = err.message || "Failed to load users";
+        console.error("Error loading users:", err);
       } finally {
         loading.value = false;
       }
     };
 
-    // Show modal for creating a new application
-    const showCreateApplicationModal = () => {
+    // Show modal for creating a new user
+    const showCreateUserModal = () => {
       // This would be implemented with a modal component
-      alert("Create application modal would appear here");
+      alert("Create user modal would appear here");
     };
 
-    // Load applications on component mount
+    // Load users on component mount
     onMounted(() => {
-      loadApplications();
+      loadUsers();
     });
 
     return () => (
       <div>
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl font-bold">Application Management</h1>
-          <Button
-            class="flex gap-1 items-center"
-            onClick={showCreateApplicationModal}
-          >
+          <h1 class="text-2xl font-bold">User Management</h1>
+          <Button class="flex gap-1 items-center" onClick={showCreateUserModal}>
             <PlusCircle class="h-4 w-4" />
-            New Application
+            Add User
           </Button>
         </div>
 
         {loading.value ? (
-          <div class="text-center py-8">Loading applications...</div>
+          <div class="text-center py-8">Loading users...</div>
         ) : error.value ? (
           <div class="text-center py-8 text-red-500">{error.value}</div>
         ) : (
@@ -77,37 +74,31 @@ export const ApplicationsList = defineComponent({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>API Key</TableHead>
+                  <TableHead>Email</TableHead>
                   <TableHead>Created At</TableHead>
+                  <TableHead>Updated At</TableHead>
                   <TableHead class="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {applications.value.length === 0 ? (
+                {users.value.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} class="text-center py-8">
-                      No applications found
+                    <TableCell colSpan={4} class="text-center py-8">
+                      No users found
                     </TableCell>
                   </TableRow>
                 ) : (
-                  applications.value.map((app) => (
-                    <TableRow key={app.Id}>
-                      <TableCell class="font-medium">{app.Name}</TableCell>
-                      <TableCell>{app.Description || "N/A"}</TableCell>
-                      <TableCell>
-                        <code class="bg-muted rounded px-1 py-0.5 text-xs">
-                          {app.AppKey}
-                        </code>
-                      </TableCell>
-                      <TableCell>{formatDate(app.CreatedAt)}</TableCell>
+                  users.value.map((user) => (
+                    <TableRow key={user.Id}>
+                      <TableCell class="font-medium">{user.Email}</TableCell>
+                      <TableCell>{formatDate(user.CreatedAt)}</TableCell>
+                      <TableCell>{formatDate(user.UpdatedAt)}</TableCell>
                       <TableCell class="text-right">
                         <div class="flex justify-end gap-2">
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => viewApplicationDetails(app.Id)}
+                            onClick={() => viewUserDetails(user.Id)}
                           >
                             <ExternalLink class="h-4 w-4" />
                             <span class="sr-only">View Details</span>

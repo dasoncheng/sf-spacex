@@ -13,7 +13,7 @@ export class CreateApplicationDto {
 export class ApplicationResponseDto {
   Id: string;
   Name: string;
-  Description?: string;
+  Description: string | null;
   AppKey: string;
   CreatedAt: Date;
   UpdatedAt: Date;
@@ -24,6 +24,6 @@ export class ApplicationDetailDto extends ApplicationResponseDto {
     Id: string;
     Email: string;
     activatedAt: Date;
-    expiresAt?: Date;
+    expiresAt: Date | null;
   }[];
 }

@@ -1,7 +1,17 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
+import { genSalt, hash } from 'bcryptjs'; // Replace bcrypt with bcryptjs
+import { omit } from 'lodash-es';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto, UserDetailDto, UserResponseDto } from './dto/user.dto';
-import * as bcrypt from 'bcrypt';
+
+async function hashPassword(val: string) {
+  const salt = await genSalt(10); // Generate salt with bcryptjs
+  return await hash(val, salt); // Hash with bcryptjs
+}
 
 @Injectable()
 export class UsersService {
@@ -16,7 +26,7 @@ export class UsersService {
       throw new ConflictException('Email already in use');
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.Password, 10);
+    const hashedPassword = await hashPassword(createUserDto.Password);
 
     const user = await this.prisma.user.create({
       data: {
@@ -25,15 +35,13 @@ export class UsersService {
       },
     });
 
-    const { Password, ...result } = user;
-    return result as UserResponseDto;
+    return omit(user, 'Password') as UserResponseDto;
   }
 
   async findAll(): Promise<UserResponseDto[]> {
     const users = await this.prisma.user.findMany();
-    return users.map(user => {
-      const { Password, ...result } = user;
-      return result as UserResponseDto;
+    return users.map((user) => {
+      return omit(user, 'Password') as UserResponseDto;
     });
   }
 
@@ -53,10 +61,8 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    const { Password, ...userWithoutPassword } = user;
-
     // Map activations to the expected format
-    const applications = user.Activations.map(activation => ({
+    const applications = user.Activations.map((activation) => ({
       Id: activation.Application.Id,
       Name: activation.Application.Name,
       AppKey: activation.Application.AppKey,
@@ -65,7 +71,7 @@ export class UsersService {
     }));
 
     return {
-      ...userWithoutPassword,
+      ...omit(user, 'Password'),
       applications,
     } as UserDetailDto;
   }

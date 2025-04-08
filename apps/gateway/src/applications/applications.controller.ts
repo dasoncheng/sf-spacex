@@ -1,13 +1,19 @@
 import { Controller, Post, Get, Body, Param } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
-import { CreateApplicationDto, ApplicationResponseDto, ApplicationDetailDto } from './dto/application.dto';
+import {
+  CreateApplicationDto,
+  ApplicationResponseDto,
+  ApplicationDetailDto,
+} from './dto/application.dto';
 
 @Controller('applications')
 export class ApplicationsController {
   constructor(private readonly applicationsService: ApplicationsService) {}
 
   @Post()
-  async create(@Body() createApplicationDto: CreateApplicationDto): Promise<ApplicationResponseDto> {
+  async create(
+    @Body() createApplicationDto: CreateApplicationDto,
+  ): Promise<ApplicationResponseDto> {
     return this.applicationsService.create(createApplicationDto);
   }
 

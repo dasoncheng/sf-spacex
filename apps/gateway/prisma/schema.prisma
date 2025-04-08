@@ -5,14 +5,12 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions"] // 启用扩展支持
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DATABASE_URL")
-  extensions = [pgcrypto] // 添加 pgcrypto 扩展
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // 用户模型
@@ -44,7 +42,7 @@ model License {
   Id         String   @id @default(uuid()) // 许可证的唯一标识符，UUID格式
   LicenseKey String   @unique // 许可证密钥，34位字符串，唯一
   IsUsed     Boolean  @default(false) // 标记许可证是否已被使用
-  Days       Int // 激活时长（以天为单位）
+  ExpiresAt  Int? // 激活时长（以秒为单位），可选字段
   CreatedAt  DateTime @default(now()) @db.Timestamptz(6) // 记录许可证创建时间，带时区
   UpdatedAt  DateTime @updatedAt @db.Timestamptz(6) // 记录许可证信息的最后更新时间，带时区
 

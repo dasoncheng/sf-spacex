@@ -1,18 +1,31 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ActivationResponseDto, CreateActivationDto, ValidityCheckDto, ValidityResponseDto } from './dto/activation.dto';
+import {
+  ActivationResponseDto,
+  CreateActivationDto,
+  ValidityCheckDto,
+  ValidityResponseDto,
+} from './dto/activation.dto';
 
 @Injectable()
 export class ActivationsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createActivationDto: CreateActivationDto): Promise<ActivationResponseDto> {
+  async create(
+    createActivationDto: CreateActivationDto,
+  ): Promise<ActivationResponseDto> {
     // Check if user exists
     const user = await this.prisma.user.findUnique({
       where: { Id: createActivationDto.userId },
     });
     if (!user) {
-      throw new NotFoundException(`User with ID ${createActivationDto.userId} not found`);
+      throw new NotFoundException(
+        `User with ID ${createActivationDto.userId} not found`,
+      );
     }
 
     // Check if application exists
@@ -20,7 +33,9 @@ export class ActivationsService {
       where: { Id: createActivationDto.applicationId },
     });
     if (!application) {
-      throw new NotFoundException(`Application with ID ${createActivationDto.applicationId} not found`);
+      throw new NotFoundException(
+        `Application with ID ${createActivationDto.applicationId} not found`,
+      );
     }
 
     // Check if license exists and is not used
@@ -28,10 +43,14 @@ export class ActivationsService {
       where: { LicenseKey: createActivationDto.licenseKey },
     });
     if (!license) {
-      throw new NotFoundException(`License with key ${createActivationDto.licenseKey} not found`);
+      throw new NotFoundException(
+        `License with key ${createActivationDto.licenseKey} not found`,
+      );
     }
     if (license.IsUsed) {
-      throw new BadRequestException(`License with key ${createActivationDto.licenseKey} is already in use`);
+      throw new BadRequestException(
+        `License with key ${createActivationDto.licenseKey} is already in use`,
+      );
     }
 
     // Calculate expiration date based on license's ExpiresAt (duration in seconds)
@@ -59,10 +78,16 @@ export class ActivationsService {
       });
     });
 
-    return result;
+    // Convert null ExpiresAt to undefined for type compatibility
+    return {
+      ...result,
+      ExpiresAt: result.ExpiresAt || undefined,
+    };
   }
 
-  async checkValidity(checkDto: ValidityCheckDto): Promise<ValidityResponseDto> {
+  async checkValidity(
+    checkDto: ValidityCheckDto,
+  ): Promise<ValidityResponseDto> {
     const activation = await this.prisma.activation.findFirst({
       where: {
         UserId: checkDto.userId,
@@ -88,7 +113,8 @@ export class ActivationsService {
     return {
       isValid,
       expiresAt: expiresAt || undefined,
-      remainingSeconds: isValid && remainingSeconds ? remainingSeconds : undefined,
+      remainingSeconds:
+        isValid && remainingSeconds ? remainingSeconds : undefined,
     };
   }
 }
