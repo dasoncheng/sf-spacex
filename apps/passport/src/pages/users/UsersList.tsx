@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle, Edit, Trash2, ExternalLink } from "lucide-vue-next";
 import { usersService } from "@/services/usersService";
 import type { User } from "@/types/api";
+import { CreateUserModal } from "./CreateUserModal";
 
 export const UsersList = defineComponent({
   name: "UsersList",
@@ -20,6 +21,7 @@ export const UsersList = defineComponent({
     const users = ref<User[]>([]);
     const loading = ref(true);
     const error = ref<string | null>(null);
+    const isCreateModalOpen = ref(false);
 
     // Format date to local date string
     const formatDate = (dateString: string) => {
@@ -46,8 +48,25 @@ export const UsersList = defineComponent({
 
     // Show modal for creating a new user
     const showCreateUserModal = () => {
-      // This would be implemented with a modal component
-      alert("Create user modal would appear here");
+      isCreateModalOpen.value = true;
+    };
+
+    // Handle user creation
+    const handleUserCreated = async (userData: {
+      email: string;
+      password: string;
+    }) => {
+      try {
+        // Call API to create user
+        await usersService.createUser(userData);
+        // Reload users list to show the newly created user
+        await loadUsers();
+        // Close modal
+        isCreateModalOpen.value = false;
+      } catch (err: any) {
+        console.error("Error creating user:", err);
+        error.value = err.message || "Failed to create user";
+      }
     };
 
     // Load users on component mount
@@ -120,6 +139,13 @@ export const UsersList = defineComponent({
             </Table>
           </div>
         )}
+
+        {/* Create User Modal */}
+        <CreateUserModal
+          isOpen={isCreateModalOpen.value}
+          onClose={() => (isCreateModalOpen.value = false)}
+          onSubmit={handleUserCreated}
+        />
       </div>
     );
   },
