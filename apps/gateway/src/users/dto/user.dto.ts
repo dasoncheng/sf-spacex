@@ -3,12 +3,21 @@ import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
-  Email: string;
+  Email?: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  email?: string;
 
   @IsString()
   @MinLength(6)
   @IsNotEmpty()
-  Password: string;
+  Password?: string;
+
+  @IsString()
+  @MinLength(6)
+  @IsNotEmpty()
+  password?: string;
 }
 
 export class UserResponseDto {

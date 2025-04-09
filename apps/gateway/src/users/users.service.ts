@@ -2,6 +2,7 @@ import {
   Injectable,
   ConflictException,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { genSalt, hash } from 'bcryptjs'; // Replace bcrypt with bcryptjs
 import { omit } from 'lodash-es';
@@ -18,19 +19,28 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+    // Normalize input - handle both camelCase and PascalCase field names
+    const email = createUserDto.email || createUserDto.Email;
+    const password = createUserDto.password || createUserDto.Password;
+
+    // Validation
+    if (!email || !password) {
+      throw new BadRequestException('Email and password are required');
+    }
+
     const existingUser = await this.prisma.user.findUnique({
-      where: { Email: createUserDto.Email },
+      where: { Email: email },
     });
 
     if (existingUser) {
       throw new ConflictException('Email already in use');
     }
 
-    const hashedPassword = await hashPassword(createUserDto.Password);
+    const hashedPassword = await hashPassword(password);
 
     const user = await this.prisma.user.create({
       data: {
-        Email: createUserDto.Email,
+        Email: email,
         Password: hashedPassword,
       },
     });

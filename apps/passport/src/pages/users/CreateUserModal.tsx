@@ -94,7 +94,12 @@ export const CreateUserModal = defineComponent({
     };
 
     return () => (
-      <Dialog open={props.isOpen} onOpenChange={handleClose}>
+      <Dialog
+        open={props.isOpen}
+        onUpdate:open={(va) => {
+          handleClose()
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>创建新用户</DialogTitle>
@@ -119,10 +124,7 @@ export const CreateUserModal = defineComponent({
                   id="email"
                   type="email"
                   placeholder="user@example.com"
-                  value={email.value}
-                  onInput={(e) =>
-                    (email.value = (e.target as HTMLInputElement).value)
-                  }
+                  v-model={email.value}
                   required
                 />
               </div>
@@ -132,10 +134,7 @@ export const CreateUserModal = defineComponent({
                 <Input
                   id="password"
                   type="password"
-                  value={password.value}
-                  onInput={(e) =>
-                    (password.value = (e.target as HTMLInputElement).value)
-                  }
+                  v-model={password.value}
                   required
                 />
               </div>
@@ -145,12 +144,7 @@ export const CreateUserModal = defineComponent({
                 <Input
                   id="confirm-password"
                   type="password"
-                  value={confirmPassword.value}
-                  onInput={(e) =>
-                    (confirmPassword.value = (
-                      e.target as HTMLInputElement
-                    ).value)
-                  }
+                  v-model={confirmPassword.value}
                   required
                 />
               </div>
