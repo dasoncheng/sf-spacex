@@ -97,7 +97,7 @@ export const CreateUserModal = defineComponent({
       <Dialog open={props.isOpen} onOpenChange={handleClose}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New User</DialogTitle>
+            <DialogTitle>创建新用户</DialogTitle>
           </DialogHeader>
 
           <form
@@ -114,7 +114,7 @@ export const CreateUserModal = defineComponent({
               )}
 
               <div class="grid gap-2">
-                <Label for="email">Email Address</Label>
+                <Label for="email">邮箱地址</Label>
                 <Input
                   id="email"
                   type="email"
@@ -128,7 +128,7 @@ export const CreateUserModal = defineComponent({
               </div>
 
               <div class="grid gap-2">
-                <Label for="password">Password</Label>
+                <Label for="password">密码</Label>
                 <Input
                   id="password"
                   type="password"
@@ -141,7 +141,7 @@ export const CreateUserModal = defineComponent({
               </div>
 
               <div class="grid gap-2">
-                <Label for="confirm-password">Confirm Password</Label>
+                <Label for="confirm-password">确认密码</Label>
                 <Input
                   id="confirm-password"
                   type="password"
@@ -158,10 +158,10 @@ export const CreateUserModal = defineComponent({
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={handleClose}>
-                Cancel
+                取消
               </Button>
               <Button type="submit" disabled={isSubmitting.value}>
-                {isSubmitting.value ? "Creating..." : "Create User"}
+                {isSubmitting.value ? "创建中..." : "创建用户"}
               </Button>
             </DialogFooter>
           </form>

@@ -58,18 +58,18 @@ export const ApplicationsList = defineComponent({
     return () => (
       <div>
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl font-bold">Application Management</h1>
+          <h1 class="text-2xl font-bold">应用管理</h1>
           <Button
             class="flex gap-1 items-center"
             onClick={showCreateApplicationModal}
           >
             <PlusCircle class="h-4 w-4" />
-            New Application
+            新建应用
           </Button>
         </div>
 
         {loading.value ? (
-          <div class="text-center py-8">Loading applications...</div>
+          <div class="text-center py-8">加载应用中...</div>
         ) : error.value ? (
           <div class="text-center py-8 text-red-500">{error.value}</div>
         ) : (
@@ -77,18 +77,18 @@ export const ApplicationsList = defineComponent({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Description</TableHead>
+                  <TableHead>名称</TableHead>
+                  <TableHead>描述</TableHead>
                   <TableHead>API Key</TableHead>
-                  <TableHead>Created At</TableHead>
-                  <TableHead class="text-right">Actions</TableHead>
+                  <TableHead>创建时间</TableHead>
+                  <TableHead class="text-right">操作</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {applications.value.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} class="text-center py-8">
-                      No applications found
+                      未找到应用
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -110,15 +110,15 @@ export const ApplicationsList = defineComponent({
                             onClick={() => viewApplicationDetails(app.Id)}
                           >
                             <ExternalLink class="h-4 w-4" />
-                            <span class="sr-only">View Details</span>
+                            <span class="sr-only">查看详情</span>
                           </Button>
                           <Button variant="ghost" size="icon">
                             <Edit class="h-4 w-4" />
-                            <span class="sr-only">Edit</span>
+                            <span class="sr-only">编辑</span>
                           </Button>
                           <Button variant="ghost" size="icon">
                             <Trash2 class="h-4 w-4" />
-                            <span class="sr-only">Delete</span>
+                            <span class="sr-only">删除</span>
                           </Button>
                         </div>
                       </TableCell>

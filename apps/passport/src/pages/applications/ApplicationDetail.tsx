@@ -67,13 +67,13 @@ export const ApplicationDetail = defineComponent({
         <div class="flex items-center mb-6">
           <Button variant="ghost" onClick={goBack} class="mr-2">
             <ArrowLeft class="h-4 w-4 mr-1" />
-            Back to Applications
+            返回应用列表
           </Button>
-          <h1 class="text-2xl font-bold">Application Details</h1>
+          <h1 class="text-2xl font-bold">应用详情</h1>
         </div>
 
         {loading.value ? (
-          <div class="text-center py-8">Loading application details...</div>
+          <div class="text-center py-8">加载应用详情...</div>
         ) : error.value ? (
           <div class="text-center py-8 text-red-500">{error.value}</div>
         ) : application.value ? (
@@ -81,19 +81,19 @@ export const ApplicationDetail = defineComponent({
             {/* Application Info Card */}
             <div class="rounded-lg border bg-card p-6">
               <h2 class="text-xl font-semibold mb-4">
-                Application Information
+                应用信息
               </h2>
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <p class="text-sm text-muted-foreground">Name</p>
+                  <p class="text-sm text-muted-foreground">名称</p>
                   <p class="font-medium">{application.value.Name}</p>
                 </div>
                 <div>
-                  <p class="text-sm text-muted-foreground">Application ID</p>
+                  <p class="text-sm text-muted-foreground">应用 ID</p>
                   <p class="font-medium">{application.value.Id}</p>
                 </div>
                 <div>
-                  <p class="text-sm text-muted-foreground">Description</p>
+                  <p class="text-sm text-muted-foreground">描述</p>
                   <p class="font-medium">
                     {application.value.Description || "N/A"}
                   </p>
@@ -105,13 +105,13 @@ export const ApplicationDetail = defineComponent({
                   </code>
                 </div>
                 <div>
-                  <p class="text-sm text-muted-foreground">Created At</p>
+                  <p class="text-sm text-muted-foreground">创建时间</p>
                   <p class="font-medium">
                     {formatDate(application.value.CreatedAt)}
                   </p>
                 </div>
                 <div>
-                  <p class="text-sm text-muted-foreground">Updated At</p>
+                  <p class="text-sm text-muted-foreground">更新时间</p>
                   <p class="font-medium">
                     {formatDate(application.value.UpdatedAt)}
                   </p>
@@ -121,21 +121,21 @@ export const ApplicationDetail = defineComponent({
 
             {/* Users Table */}
             <div class="rounded-lg border">
-              <h2 class="text-xl font-semibold p-4">Users</h2>
+              <h2 class="text-xl font-semibold p-4">用户</h2>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Activated At</TableHead>
-                    <TableHead>Expires At</TableHead>
-                    <TableHead class="text-right">Actions</TableHead>
+                    <TableHead>邮箱</TableHead>
+                    <TableHead>激活时间</TableHead>
+                    <TableHead>过期时间</TableHead>
+                    <TableHead class="text-right">操作</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {application.value.users.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={4} class="text-center py-8">
-                        No users have activated this application
+                        没有用户激活此应用
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -146,7 +146,7 @@ export const ApplicationDetail = defineComponent({
                         <TableCell>
                           {user.expiresAt
                             ? formatDate(user.expiresAt)
-                            : "Never"}
+                            : "永不过期"}
                         </TableCell>
                         <TableCell class="text-right">
                           <Button
@@ -155,7 +155,7 @@ export const ApplicationDetail = defineComponent({
                             onClick={() => viewUserDetails(user.Id)}
                           >
                             <ExternalLink class="h-4 w-4" />
-                            <span class="sr-only">View User Details</span>
+                            <span class="sr-only">查看用户详情</span>
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -166,7 +166,7 @@ export const ApplicationDetail = defineComponent({
             </div>
           </div>
         ) : (
-          <div class="text-center py-8">Application not found</div>
+          <div class="text-center py-8">未找到应用</div>
         )}
       </div>
     );

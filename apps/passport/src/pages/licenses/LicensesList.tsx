@@ -85,23 +85,23 @@ export const LicensesList = defineComponent({
     return () => (
       <div>
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl font-bold">License Management</h1>
+          <h1 class="text-2xl font-bold">许可证管理</h1>
           <div class="flex gap-2">
             <Button
               class="flex gap-1 items-center"
               onClick={showCreateLicenseModal}
             >
               <PlusCircle class="h-4 w-4" />
-              New License
+              新建许可证
             </Button>
             <Button variant="outline" onClick={showBatchCreateModal}>
-              Batch Generate
+              批量生成
             </Button>
           </div>
         </div>
 
         {loading.value ? (
-          <div class="text-center py-8">Loading licenses...</div>
+          <div class="text-center py-8">加载许可证中...</div>
         ) : error.value ? (
           <div class="text-center py-8 text-red-500">{error.value}</div>
         ) : (
@@ -109,18 +109,18 @@ export const LicensesList = defineComponent({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>License Key</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead>Created At</TableHead>
-                  <TableHead class="text-right">Actions</TableHead>
+                  <TableHead>许可证 Key</TableHead>
+                  <TableHead>状态</TableHead>
+                  <TableHead>有效期</TableHead>
+                  <TableHead>创建时间</TableHead>
+                  <TableHead class="text-right">操作</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {licenses.value.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} class="text-center py-8">
-                      No licenses found
+                      未找到许可证
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -137,7 +137,7 @@ export const LicensesList = defineComponent({
                               : "inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
                           }
                         >
-                          {license.IsUsed ? "Used" : "Available"}
+                          {license.IsUsed ? "已使用" : "可用"}
                         </span>
                       </TableCell>
                       <TableCell>{formatDuration(license.ExpiresAt)}</TableCell>
@@ -150,11 +150,11 @@ export const LicensesList = defineComponent({
                             onClick={() => viewLicenseDetails(license.Id)}
                           >
                             <ExternalLink class="h-4 w-4" />
-                            <span class="sr-only">View Details</span>
+                            <span class="sr-only">查看详情</span>
                           </Button>
                           <Button variant="ghost" size="icon">
                             <Trash2 class="h-4 w-4" />
-                            <span class="sr-only">Revoke</span>
+                            <span class="sr-only">撤销</span>
                           </Button>
                         </div>
                       </TableCell>

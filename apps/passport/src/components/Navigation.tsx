@@ -10,17 +10,17 @@ export const Navigation = defineComponent({
 
     const navItems = [
       {
-        title: "Users",
+        title: "用户",
         path: "/users",
         icon: Users,
       },
       {
-        title: "Applications",
+        title: "应用",
         path: "/applications",
         icon: Package,
       },
       {
-        title: "Licenses",
+        title: "许可证",
         path: "/licenses",
         icon: KeyRound,
       },

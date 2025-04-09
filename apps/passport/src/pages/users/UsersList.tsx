@@ -77,15 +77,15 @@ export const UsersList = defineComponent({
     return () => (
       <div>
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl font-bold">User Management</h1>
+          <h1 class="text-2xl font-bold">用户管理</h1>
           <Button class="flex gap-1 items-center" onClick={showCreateUserModal}>
             <PlusCircle class="h-4 w-4" />
-            Add User
+            添加用户
           </Button>
         </div>
 
         {loading.value ? (
-          <div class="text-center py-8">Loading users...</div>
+          <div class="text-center py-8">加载用户中...</div>
         ) : error.value ? (
           <div class="text-center py-8 text-red-500">{error.value}</div>
         ) : (
@@ -93,17 +93,17 @@ export const UsersList = defineComponent({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Created At</TableHead>
-                  <TableHead>Updated At</TableHead>
-                  <TableHead class="text-right">Actions</TableHead>
+                  <TableHead>邮箱</TableHead>
+                  <TableHead>创建时间</TableHead>
+                  <TableHead>更新时间</TableHead>
+                  <TableHead class="text-right">操作</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {users.value.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} class="text-center py-8">
-                      No users found
+                      未找到用户
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -120,15 +120,15 @@ export const UsersList = defineComponent({
                             onClick={() => viewUserDetails(user.Id)}
                           >
                             <ExternalLink class="h-4 w-4" />
-                            <span class="sr-only">View Details</span>
+                            <span class="sr-only">查看详情</span>
                           </Button>
                           <Button variant="ghost" size="icon">
                             <Edit class="h-4 w-4" />
-                            <span class="sr-only">Edit</span>
+                            <span class="sr-only">编辑</span>
                           </Button>
                           <Button variant="ghost" size="icon">
                             <Trash2 class="h-4 w-4" />
-                            <span class="sr-only">Delete</span>
+                            <span class="sr-only">删除</span>
                           </Button>
                         </div>
                       </TableCell>

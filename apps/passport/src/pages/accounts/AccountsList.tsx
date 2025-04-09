@@ -69,10 +69,10 @@ export const AccountsList = defineComponent({
     return () => (
       <div>
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl font-bold">Account Management</h1>
+          <h1 class="text-2xl font-bold">账户管理</h1>
           <Button class="flex gap-1 items-center">
             <PlusCircle class="h-4 w-4" />
-            Add Account
+            添加账户
           </Button>
         </div>
 
@@ -80,12 +80,12 @@ export const AccountsList = defineComponent({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead class="text-right">Actions</TableHead>
+                <TableHead>名称</TableHead>
+                <TableHead>邮箱</TableHead>
+                <TableHead>角色</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>创建时间</TableHead>
+                <TableHead class="text-right">操作</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -110,11 +110,11 @@ export const AccountsList = defineComponent({
                     <div class="flex justify-end gap-2">
                       <Button variant="ghost" size="icon">
                         <Edit class="h-4 w-4" />
-                        <span class="sr-only">Edit</span>
+                        <span class="sr-only">编辑</span>
                       </Button>
                       <Button variant="ghost" size="icon">
                         <Trash2 class="h-4 w-4" />
-                        <span class="sr-only">Delete</span>
+                        <span class="sr-only">删除</span>
                       </Button>
                     </div>
                   </TableCell>

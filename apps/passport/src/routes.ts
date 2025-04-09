@@ -15,16 +15,17 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     component: MainLayout,
+    redirect: "/users",
     children: [
-      { path: "/users", component: UsersList },
-      { path: "/users/:id", component: UserDetail },
-      { path: "/licenses", component: LicensesList },
-      { path: "/licenses/:id", component: LicenseDetail },
-      { path: "/applications", component: ApplicationsList },
-      { path: "/applications/:id", component: ApplicationDetail },
+      { path: "users", component: UsersList, meta: { label: '用户列表' } },
+      { path: "users/:id", component: UserDetail },
+      { path: "licenses", component: LicensesList, meta: { label: '许可证列表' } },
+      { path: "licenses/:id", component: LicenseDetail },
+      { path: "applications", component: ApplicationsList, meta: { label: '应用列表' } },
+      { path: "applications/:id", component: ApplicationDetail },
     ],
   },
-  { path: "/", redirect: "/users" },
+  { path: '/:pathMatch(.*)*', redirect: '/users' }, // Catch-all route
 ];
 
 const router = createRouter({
