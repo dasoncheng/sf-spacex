@@ -11,7 +11,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Edit, Trash2, ExternalLink } from "lucide-vue-next";
 import { licensesService } from "@/services/licensesService";
-import type { License } from "@/types/api";
+import type {
+  BatchCreateLicenseDto,
+  CreateLicenseDto,
+  License,
+} from "@/types/api";
+import { CreateLicensesModal } from "./CreateLicensesModal";
 
 export const LicensesList = defineComponent({
   name: "LicensesList",
@@ -20,6 +25,8 @@ export const LicensesList = defineComponent({
     const licenses = ref<License[]>([]);
     const loading = ref(true);
     const error = ref<string | null>(null);
+    const isCreateModalOpen = ref<boolean>(false);
+    const isCreateSingle = ref<boolean>(true);
 
     // Format date to local date string
     const formatDate = (dateString: string) => {
@@ -67,14 +74,38 @@ export const LicensesList = defineComponent({
 
     // Show modal for creating a new license
     const showCreateLicenseModal = () => {
-      // This would be implemented with a modal component
-      alert("Create license modal would appear here");
+      isCreateSingle.value = true;
+      isCreateModalOpen.value = true;
     };
 
     // Show modal for batch creating licenses
     const showBatchCreateModal = () => {
-      // This would be implemented with a modal component
-      alert("Batch create licenses modal would appear here");
+      isCreateSingle.value = false;
+      isCreateModalOpen.value = true;
+    };
+
+    const handleLicensesCreated = async (licensesData: CreateLicenseDto) => {
+      try {
+        await licensesService.createLicense(licensesData);
+        await loadLicenses();
+        isCreateModalOpen.value = false;
+      } catch (err: any) {
+        console.error("Error creating Licenses:", err);
+        error.value = err.message || "Failed to create Licenses";
+      }
+    };
+
+    const handleLicensesCreatedBatch = async (
+      licensesData: BatchCreateLicenseDto
+    ) => {
+      try {
+        await licensesService.batchCreateLicenses(licensesData);
+        await loadLicenses();
+        isCreateModalOpen.value = false;
+      } catch (err: any) {
+        console.error("Error creating Licenses:", err);
+        error.value = err.message || "Failed to create Licenses";
+      }
     };
 
     // Load licenses on component mount
@@ -165,6 +196,14 @@ export const LicensesList = defineComponent({
             </Table>
           </div>
         )}
+
+        <CreateLicensesModal
+          isSingle={isCreateSingle.value}
+          isOpen={isCreateModalOpen.value}
+          onClose={() => (isCreateModalOpen.value = false)}
+          onSubmit={handleLicensesCreated}
+          onSublitBatch={handleLicensesCreatedBatch}
+        />
       </div>
     );
   },
