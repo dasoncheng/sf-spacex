@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle, Edit, Trash2, ExternalLink } from "lucide-vue-next";
 import { applicationsService } from "@/services/applicationsService";
 import type { Application } from "@/types/api";
+import { CreateApplicationModal } from "./CreateApplicationModal";
 
 export const ApplicationsList = defineComponent({
   name: "ApplicationsList",
@@ -20,6 +21,7 @@ export const ApplicationsList = defineComponent({
     const applications = ref<Application[]>([]);
     const loading = ref(true);
     const error = ref<string | null>(null);
+    const isCreateModalOpen = ref(false);
 
     // Format date to local date string
     const formatDate = (dateString: string) => {
@@ -46,8 +48,21 @@ export const ApplicationsList = defineComponent({
 
     // Show modal for creating a new application
     const showCreateApplicationModal = () => {
-      // This would be implemented with a modal component
-      alert("Create application modal would appear here");
+      isCreateModalOpen.value = true;
+    };
+
+    const handleApplicationCreated = async (applicationData: {
+      Name: string;
+      Description: string;
+    }) => {
+      try {
+        await applicationsService.createApplication(applicationData);
+        await loadApplications();
+        isCreateModalOpen.value = false;
+      } catch (err: any) {
+        console.error("Error creating Application:", err);
+        error.value = err.message || "Failed to create Application";
+      }
     };
 
     // Load applications on component mount
@@ -129,6 +144,12 @@ export const ApplicationsList = defineComponent({
             </Table>
           </div>
         )}
+
+        <CreateApplicationModal
+          isOpen={isCreateModalOpen.value}
+          onClose={() => (isCreateModalOpen.value = false)}
+          onSubmit={handleApplicationCreated}
+        />
       </div>
     );
   },

@@ -1,5 +1,7 @@
 // Base API configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || "api";
+import { environment } from "@/utils/environment";
+
+// const API_BASE_URL = import.meta.env.VITE_API_URL || "api";
 
 // Common headers for API requests
 const headers = {
@@ -19,7 +21,7 @@ const handleResponse = async (response: Response) => {
 export const api = {
   // GET request
   async get<T>(endpoint: string): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(`${environment.value?.baseUrl}${endpoint}`, {
       method: "GET",
       headers,
     });
@@ -28,7 +30,7 @@ export const api = {
 
   // POST request
   async post<T>(endpoint: string, data: any): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(`${environment.value?.baseUrl}${endpoint}`, {
       method: "POST",
       headers,
       body: JSON.stringify(data),
@@ -38,7 +40,7 @@ export const api = {
 
   // PUT request
   async put<T>(endpoint: string, data: any): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(`${environment.value?.baseUrl}${endpoint}`, {
       method: "PUT",
       headers,
       body: JSON.stringify(data),
@@ -48,7 +50,7 @@ export const api = {
 
   // DELETE request
   async delete<T>(endpoint: string): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(`${environment.value?.baseUrl}${endpoint}`, {
       method: "DELETE",
       headers,
     });
