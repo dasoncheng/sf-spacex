@@ -101,10 +101,18 @@ export interface ValidityResponseDto {
   remainingSeconds?: number;
 }
 
-export interface AccountInfo {
-  token: string;
-}
+// Auth types - updated to match the gateway API
 export interface Login {
-  mobileNum: string;
+  email: string;
   password: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  accessToken: string;
+}
+
+export interface AccountInfo {
+  user: User;
+  token: string;
 }

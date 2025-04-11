@@ -9,7 +9,7 @@ const getAccount = () => {
   }
 };
 
-const WHITE_LIST = ["/passwordToLogin"];
+const WHITE_LIST = ["/auth/login"];
 // Common headers for API requests
 
 type HeadersWithAuth = {

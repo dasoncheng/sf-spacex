@@ -23,14 +23,14 @@ export const LoginModal = defineComponent({
     },
     onSubmit: {
       type: Function as () => (data: {
-        mobileNum: string;
+        email: string;
         password: string;
       }) => void,
       required: true,
     },
   },
   setup(props) {
-    const mobileNum = ref("");
+    const email = ref("");
     const password = ref("");
     const isSubmitting = ref(false);
     const error = ref<string | null>(null);
@@ -38,8 +38,8 @@ export const LoginModal = defineComponent({
     // Validate form
     const validateForm = () => {
       error.value = null;
-      if (!mobileNum.value) {
-        error.value = "MobileNum is required";
+      if (!email.value) {
+        error.value = "Email is required";
         return false;
       }
       if (!password.value) {
@@ -51,7 +51,7 @@ export const LoginModal = defineComponent({
 
     // Reset form
     const resetForm = () => {
-      mobileNum.value = "";
+      email.value = "";
       password.value = "";
       error.value = null;
     };
@@ -63,7 +63,7 @@ export const LoginModal = defineComponent({
       try {
         isSubmitting.value = true;
         await props.onSubmit({
-          mobileNum: mobileNum.value,
+          email: email.value,
           password: password.value,
         });
         resetForm();
@@ -107,12 +107,12 @@ export const LoginModal = defineComponent({
               )}
 
               <div class="grid gap-2">
-                <Label for="mobileNum">账号</Label>
+                <Label for="email">邮箱</Label>
                 <Input
-                  id="mobileNum"
-                  type="text"
-                  placeholder="请输入账号"
-                  v-model={mobileNum.value}
+                  id="email"
+                  type="email"
+                  placeholder="请输入邮箱"
+                  v-model={email.value}
                   required
                 />
               </div>
