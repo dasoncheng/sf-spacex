@@ -9,10 +9,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, ExternalLink } from "lucide-vue-next";
+import { PlusCircle } from "lucide-vue-next";
 import { usersService } from "@/services/usersService";
 import type { User } from "@/types/api";
 import { CreateUserModal } from "./CreateUserModal";
+import { format } from "date-fns";
 
 export const UsersList = defineComponent({
   name: "UsersList",
@@ -23,9 +24,9 @@ export const UsersList = defineComponent({
     const error = ref<string | null>(null);
     const isCreateModalOpen = ref(false);
 
-    // Format date to local date string
+    // Format date to yyyy-MM-dd HH:mm:ss format using date-fns
     const formatDate = (dateString: string) => {
-      return new Date(dateString).toLocaleString();
+      return format(new Date(dateString), "yyyy-MM-dd HH:mm:ss");
     };
 
     // Navigate to user detail page
@@ -96,13 +97,12 @@ export const UsersList = defineComponent({
                   <TableHead>邮箱</TableHead>
                   <TableHead>创建时间</TableHead>
                   <TableHead>更新时间</TableHead>
-                  <TableHead class="text-right">操作</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {users.value.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} class="text-center py-8">
+                    <TableCell colSpan={3} class="text-center py-8">
                       未找到用户
                     </TableCell>
                   </TableRow>
@@ -112,26 +112,6 @@ export const UsersList = defineComponent({
                       <TableCell class="font-medium">{user.Email}</TableCell>
                       <TableCell>{formatDate(user.CreatedAt)}</TableCell>
                       <TableCell>{formatDate(user.UpdatedAt)}</TableCell>
-                      <TableCell class="text-right">
-                        <div class="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => viewUserDetails(user.Id)}
-                          >
-                            <ExternalLink class="h-4 w-4" />
-                            <span class="sr-only">查看详情</span>
-                          </Button>
-                          <Button variant="ghost" size="icon">
-                            <Edit class="h-4 w-4" />
-                            <span class="sr-only">编辑</span>
-                          </Button>
-                          <Button variant="ghost" size="icon">
-                            <Trash2 class="h-4 w-4" />
-                            <span class="sr-only">删除</span>
-                          </Button>
-                        </div>
-                      </TableCell>
                     </TableRow>
                   ))
                 )}
