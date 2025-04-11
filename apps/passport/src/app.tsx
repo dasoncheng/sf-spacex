@@ -1,6 +1,7 @@
 import { defineComponent } from "vue";
 import { RouterView } from "vue-router";
 import { LoginModal } from "./components/LoginModal";
+import { RegisterModal } from "./components/RegisterModal";
 import { useAuthStore } from "@/store/auth";
 import type { Login } from "./types/api";
 
@@ -25,6 +26,14 @@ export const App = defineComponent({
           isOpen={authStore.showLoginModal}
           onClose={authStore.hideLogin}
           onSubmit={handleLogin}
+          onShowRegister={authStore.showRegister}
+        />
+
+        <RegisterModal
+          isOpen={authStore.showRegisterModal}
+          onClose={authStore.hideRegister}
+          onRegisterSuccess={authStore.handleRegisterSuccess}
+          onShowLogin={authStore.showLogin}
         />
       </div>
     );

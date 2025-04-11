@@ -9,9 +9,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { usersService } from "@/services/usersService";
 
-export const LoginModal = defineComponent({
-  name: "LoginModal",
+export const RegisterModal = defineComponent({
+  name: "RegisterModal",
   props: {
     isOpen: {
       type: Boolean,
@@ -21,14 +22,11 @@ export const LoginModal = defineComponent({
       type: Function as () => () => void,
       required: true,
     },
-    onSubmit: {
-      type: Function as () => (data: {
-        email: string;
-        password: string;
-      }) => void,
+    onRegisterSuccess: {
+      type: Function as () => () => void,
       required: true,
     },
-    onShowRegister: {
+    onShowLogin: {
       type: Function as () => () => void,
       required: true,
     },
@@ -36,6 +34,7 @@ export const LoginModal = defineComponent({
   setup(props) {
     const email = ref("");
     const password = ref("");
+    const confirmPassword = ref("");
     const isSubmitting = ref(false);
     const error = ref<string | null>(null);
 
@@ -50,6 +49,10 @@ export const LoginModal = defineComponent({
         error.value = "Password is required";
         return false;
       }
+      if (password.value !== confirmPassword.value) {
+        error.value = "Passwords do not match";
+        return false;
+      }
       return true;
     };
 
@@ -57,6 +60,7 @@ export const LoginModal = defineComponent({
     const resetForm = () => {
       email.value = "";
       password.value = "";
+      confirmPassword.value = "";
       error.value = null;
     };
 
@@ -66,14 +70,15 @@ export const LoginModal = defineComponent({
 
       try {
         isSubmitting.value = true;
-        await props.onSubmit({
+        await usersService.createUser({
           email: email.value,
           password: password.value,
         });
         resetForm();
+        props.onRegisterSuccess();
       } catch (err: any) {
-        error.value = err.message || "Failed to login";
-        console.error("Error in form submission:", err);
+        error.value = err.message || "Registration failed";
+        console.error("Error in registration:", err);
       } finally {
         isSubmitting.value = false;
       }
@@ -85,10 +90,10 @@ export const LoginModal = defineComponent({
       props.onClose();
     };
 
-    // Switch to registration modal
-    const handleShowRegister = () => {
+    // Switch to login modal
+    const handleShowLogin = () => {
       resetForm();
-      props.onShowRegister();
+      props.onShowLogin();
     };
 
     return () => (
@@ -100,7 +105,7 @@ export const LoginModal = defineComponent({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>登录</DialogTitle>
+            <DialogTitle>注册新账号</DialogTitle>
           </DialogHeader>
 
           <form
@@ -117,7 +122,7 @@ export const LoginModal = defineComponent({
               )}
 
               <div class="grid gap-2">
-                <Label for="email">邮箱</Label>
+                <Label for="email">邮箱地址</Label>
                 <Input
                   id="email"
                   type="email"
@@ -137,21 +142,32 @@ export const LoginModal = defineComponent({
                   required
                 />
               </div>
+
+              <div class="grid gap-2">
+                <Label for="confirm-password">确认密码</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  placeholder="请再次输入密码"
+                  v-model={confirmPassword.value}
+                  required
+                />
+              </div>
             </div>
 
             <DialogFooter class="flex-col items-center sm:items-end">
               <Button type="submit" disabled={isSubmitting.value} class="w-full sm:w-auto">
-                {isSubmitting.value ? "登录中..." : "登录"}
+                {isSubmitting.value ? "注册中..." : "注册"}
               </Button>
-              
+
               <div class="mt-4 text-center text-sm w-full">
-                没有账号？ 
+                已有账号？
                 <button
                   type="button"
                   class="text-primary hover:underline font-medium"
-                  onClick={handleShowRegister}
+                  onClick={handleShowLogin}
                 >
-                  去注册
+                  去登录
                 </button>
               </div>
             </DialogFooter>

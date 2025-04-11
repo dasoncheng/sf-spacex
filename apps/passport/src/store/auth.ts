@@ -5,6 +5,7 @@ import { ref } from "vue";
 
 export const useAuthStore = defineStore("auth", () => {
   const showLoginModal = ref(false);
+  const showRegisterModal = ref(false);
   const currentUser = ref<User | null>(null);
   const isAuthenticated = ref(false);
 
@@ -25,12 +26,30 @@ export const useAuthStore = defineStore("auth", () => {
 
   // 显示登录弹窗
   const showLogin = () => {
+    showRegisterModal.value = false;
     showLoginModal.value = true;
   };
 
   // 隐藏登录弹窗
   const hideLogin = () => {
     showLoginModal.value = false;
+  };
+
+  // 显示注册弹窗
+  const showRegister = () => {
+    showLoginModal.value = false;
+    showRegisterModal.value = true;
+  };
+
+  // 隐藏注册弹窗
+  const hideRegister = () => {
+    showRegisterModal.value = false;
+  };
+
+  // 登录成功后的处理
+  const handleRegisterSuccess = () => {
+    hideRegister();
+    showLogin();
   };
 
   // 登录方法
@@ -61,10 +80,14 @@ export const useAuthStore = defineStore("auth", () => {
 
   return {
     showLoginModal,
+    showRegisterModal,
     currentUser,
     isAuthenticated,
     showLogin,
     hideLogin,
+    showRegister,
+    hideRegister,
+    handleRegisterSuccess,
     login,
     logout,
   };
