@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, ExternalLink } from "lucide-vue-next";
+import { PlusCircle, ExternalLink } from "lucide-vue-next";
 import { applicationsService } from "@/services/applicationsService";
 import type { Application } from "@/types/api";
 import { CreateApplicationModal } from "./CreateApplicationModal";
@@ -96,7 +96,7 @@ export const ApplicationsList = defineComponent({
                   <TableHead>描述</TableHead>
                   <TableHead>API Key</TableHead>
                   <TableHead>创建时间</TableHead>
-                  <TableHead class="text-right">操作</TableHead>
+                  <TableHead class="text-right">查看</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -118,7 +118,7 @@ export const ApplicationsList = defineComponent({
                       </TableCell>
                       <TableCell>{formatDate(app.CreatedAt)}</TableCell>
                       <TableCell class="text-right">
-                        <div class="flex justify-end gap-2">
+                        <div class="flex justify-end">
                           <Button
                             variant="ghost"
                             size="icon"
@@ -126,14 +126,6 @@ export const ApplicationsList = defineComponent({
                           >
                             <ExternalLink class="h-4 w-4" />
                             <span class="sr-only">查看详情</span>
-                          </Button>
-                          <Button variant="ghost" size="icon">
-                            <Edit class="h-4 w-4" />
-                            <span class="sr-only">编辑</span>
-                          </Button>
-                          <Button variant="ghost" size="icon">
-                            <Trash2 class="h-4 w-4" />
-                            <span class="sr-only">删除</span>
                           </Button>
                         </div>
                       </TableCell>

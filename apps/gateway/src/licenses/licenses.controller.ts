@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, UseGuards } from '@nestjs/common';
 import { LicensesService } from './licenses.service';
 import {
   BatchCreateLicenseDto,
@@ -6,8 +6,10 @@ import {
   LicenseDetailDto,
   LicenseResponseDto,
 } from './dto/license.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('licenses')
+@UseGuards(JwtAuthGuard)
 export class LicensesController {
   constructor(private readonly licensesService: LicensesService) {}
 

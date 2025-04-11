@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, ExternalLink } from "lucide-vue-next";
+import { PlusCircle } from "lucide-vue-next";
 import { licensesService } from "@/services/licensesService";
 import type {
   BatchCreateLicenseDto,
@@ -52,11 +52,6 @@ export const LicensesList = defineComponent({
 
       const minutes = Math.floor((seconds % 3600) / 60);
       return `${minutes} ${minutes === 1 ? "minute" : "minutes"}`;
-    };
-
-    // Navigate to license detail page
-    const viewLicenseDetails = (licenseId: string) => {
-      router.push(`/licenses/${licenseId}`);
     };
 
     // Load licenses from API
@@ -144,13 +139,12 @@ export const LicensesList = defineComponent({
                   <TableHead>状态</TableHead>
                   <TableHead>有效期</TableHead>
                   <TableHead>创建时间</TableHead>
-                  <TableHead class="text-right">操作</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {licenses.value.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} class="text-center py-8">
+                    <TableCell colSpan={4} class="text-center py-8">
                       未找到许可证
                     </TableCell>
                   </TableRow>
@@ -173,22 +167,6 @@ export const LicensesList = defineComponent({
                       </TableCell>
                       <TableCell>{formatDuration(license.ExpiresAt)}</TableCell>
                       <TableCell>{formatDate(license.CreatedAt)}</TableCell>
-                      <TableCell class="text-right">
-                        <div class="flex justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => viewLicenseDetails(license.Id)}
-                          >
-                            <ExternalLink class="h-4 w-4" />
-                            <span class="sr-only">查看详情</span>
-                          </Button>
-                          <Button variant="ghost" size="icon">
-                            <Trash2 class="h-4 w-4" />
-                            <span class="sr-only">撤销</span>
-                          </Button>
-                        </div>
-                      </TableCell>
                     </TableRow>
                   ))
                 )}

@@ -6,14 +6,20 @@ import { UsersModule } from './users/users.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { LicensesModule } from './licenses/licenses.module';
 import { ActivationsModule } from './activations/activations.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     PrismaModule,
     UsersModule,
     ApplicationsModule,
     LicensesModule,
     ActivationsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

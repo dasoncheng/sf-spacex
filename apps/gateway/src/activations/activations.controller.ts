@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ActivationsService } from './activations.service';
 import {
   ActivationResponseDto,
@@ -6,11 +6,13 @@ import {
   ValidityCheckDto,
   ValidityResponseDto,
 } from './dto/activation.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('activations')
 export class ActivationsController {
   constructor(private readonly activationsService: ActivationsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(
     @Body() createActivationDto: CreateActivationDto,
