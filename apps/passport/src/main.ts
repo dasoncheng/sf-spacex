@@ -1,5 +1,6 @@
 import "./index.css";
 import { createApp } from "vue";
+import { createPinia } from "pinia";
 import { App } from "./app";
 import { router } from "./routes";
 import { initEnvironment } from "./utils/environment";
@@ -67,6 +68,8 @@ async function application() {
     localStorage.setItem("layout", isCompact ? "compact" : "default");
   };
 
+  const pinia = createPinia();
+  app.use(pinia);
   app.use(router);
   app.mount("#app");
 }

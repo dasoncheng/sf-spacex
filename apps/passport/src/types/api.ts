@@ -100,3 +100,11 @@ export interface ValidityResponseDto {
   expiresAt?: string;
   remainingSeconds?: number;
 }
+
+export interface AccountInfo {
+  token: string;
+}
+export interface Login {
+  mobileNum: string;
+  password: string;
+}
