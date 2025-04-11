@@ -1,0 +1,12 @@
+{
+  "Type": 2,
+  "Actions": [
+    {
+      "Start": 0,
+      "Frame": 100,
+      "Skip": 0,
+      "Output": "特效",
+      "Dir": 1
+    }
+  ]
+}

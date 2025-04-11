@@ -1,0 +1,34 @@
+
+### 查询直播间贡献日榜
+GET https://api.996hezi.com/show/v1/queryLiveRoomRankList?liveNo=99632920&rankType=DAY&rqtime=1742457821000&rqrandom=LFD632683U78YL5R89OCYEYZGJ6KS8SS&sign=7d25965071caa87f9000898b7af1cfb1 HTTP/1.1
+appv: 4.4.1.9007
+box-agent: device:pc;channel:;appv:4.4.1.9007;deviceOs:win32 10.0.22631 32bit;deviceId:f4:f1:9e:2a:c4:6b;deviceBrand:;deviceModel:;netType:;gameOwner:;isSimulator:false;
+token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl92ZXJzaW9uIjoiVjEiLCJzdWIiOjEyMTcxNTU5NTcsImRldmljZV9pZCI6ImY0OmYxOjllOjJhOmM0OjZiIiwiYXBwX3ZlcnNpb24iOiI0LjQuMS45MDA3IiwibG9naW5fdGltZSI6MTc0MjQ1NDg5MSwiaXNzIjoiOTk2Ym94IiwiZXhwIjoxNzQ1MDQ2ODkxLCJkZXZpY2UiOiJwYyIsImlhdCI6MTc0MjQ1NDg5MSwianRpIjoiSXZnSXZ6Y1FKdkNyQktYMiJ9.amGS5w27zOx3KwDrQbZlatgWrAkQbn9y6znEZ1GOh8I
+
+### 查询直播间贡献周榜
+GET https://api.996hezi.com/show/v1/queryLiveRoomRankList?liveNo=99632920&rankType=WEEK&rqtime=1742459272000&rqrandom=AT2XPJUFP2CT7MTB3AB1Q3EOQONL2G76&sign=d7c8c0eda56de570d443bb24f750b493 HTTP/1.1
+appv: 4.4.1.9007
+box-agent: device:pc;channel:;appv:4.4.1.9007;deviceOs:win32 10.0.22631 32bit;deviceId:f4:f1:9e:2a:c4:6b;deviceBrand:;deviceModel:;netType:;gameOwner:;isSimulator:false;
+token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl92ZXJzaW9uIjoiVjEiLCJzdWIiOjEyMTcxNTU5NTcsImRldmljZV9pZCI6ImY0OmYxOjllOjJhOmM0OjZiIiwiYXBwX3ZlcnNpb24iOiI0LjQuMS45MDA3IiwibG9naW5fdGltZSI6MTc0MjQ1NDg5MSwiaXNzIjoiOTk2Ym94IiwiZXhwIjoxNzQ1MDQ2ODkxLCJkZXZpY2UiOiJwYyIsImlhdCI6MTc0MjQ1NDg5MSwianRpIjoiSXZnSXZ6Y1FKdkNyQktYMiJ9.amGS5w27zOx3KwDrQbZlatgWrAkQbn9y6znEZ1GOh8I
+
+### 查询直播间在线观众
+GET https://api.996hezi.com/show/v1/queryLiveRoomOnlineUsers?liveNo=99632920&rqtime=1742457821000&rqrandom=3S2UT49IBV1ULG7S8NKNKME7M333GYHP&sign=a4792ac3e37617df081baa46076b7974 HTTP/1.1
+appv: 4.4.1.9007
+box-agent: device:pc;channel:;appv:4.4.1.9007;deviceOs:win32 10.0.22631 32bit;deviceId:f4:f1:9e:2a:c4:6b;deviceBrand:;deviceModel:;netType:;gameOwner:;isSimulator:false;
+token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl92ZXJzaW9uIjoiVjEiLCJzdWIiOjEyMTcxNTU5NTcsImRldmljZV9pZCI6ImY0OmYxOjllOjJhOmM0OjZiIiwiYXBwX3ZlcnNpb24iOiI0LjQuMS45MDA3IiwibG9naW5fdGltZSI6MTc0MjQ1NDg5MSwiaXNzIjoiOTk2Ym94IiwiZXhwIjoxNzQ1MDQ2ODkxLCJkZXZpY2UiOiJwYyIsImlhdCI6MTc0MjQ1NDg5MSwianRpIjoiSXZnSXZ6Y1FKdkNyQktYMiJ9.amGS5w27zOx3KwDrQbZlatgWrAkQbn9y6znEZ1GOh8I
+
+### 查询直播间观众人数
+GET https://api.996hezi.com/show/v1/queryLiveRoomUserNum?liveNo=99632920&rqtime=1742457821000&rqrandom=M81IAVMX3SJ93BVBFDUK64GTEYE244M1&sign=89c499807e799951053cd6b7592f88c8 HTTP/1.1
+appv: 4.4.1.9007
+box-agent: device:pc;channel:;appv:4.4.1.9007;deviceOs:win32 10.0.22631 32bit;deviceId:f4:f1:9e:2a:c4:6b;deviceBrand:;deviceModel:;netType:;gameOwner:;isSimulator:false;
+token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl92ZXJzaW9uIjoiVjEiLCJzdWIiOjEyMTcxNTU5NTcsImRldmljZV9pZCI6ImY0OmYxOjllOjJhOmM0OjZiIiwiYXBwX3ZlcnNpb24iOiI0LjQuMS45MDA3IiwibG9naW5fdGltZSI6MTc0MjQ1NDg5MSwiaXNzIjoiOTk2Ym94IiwiZXhwIjoxNzQ1MDQ2ODkxLCJkZXZpY2UiOiJwYyIsImlhdCI6MTc0MjQ1NDg5MSwianRpIjoiSXZnSXZ6Y1FKdkNyQktYMiJ9.amGS5w27zOx3KwDrQbZlatgWrAkQbn9y6znEZ1GOh8I
+
+### 查询直播间详情
+POST http://live-api.996box.com/api/v3/Room/detail
+Content-Type: application/x-www-form-urlencoded
+device: ios
+appv: 3.6.0
+box-agent: appv:3.6.0;device:ios;deviceId:;
+
+live_no=122034217&rqtime=1742473377000&rqrandom=RWD3BWLHSCPMPRBQP69FV3VQC55QEWVJ&sign=be6058adf9fe77183e63a6b6a0888d1d
+

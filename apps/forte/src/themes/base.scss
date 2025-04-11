@@ -1,0 +1,67 @@
+html,
+body {
+  overscroll-behavior: none;
+}
+
+/* Custom Variables */
+:root {
+  --color-bg-primary: #18181b;
+  --color-bg-secondary: #27272a;
+  --color-bg-tertiary: #3f3f46;
+  --color-border: #52525b;
+  --color-accent: #0070f3; /* Changed from cyan to tech blue */
+  --color-accent-light: #3b82f6; /* Changed lighter shade */
+  --color-text-primary: #f4f4f5;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-bg-tertiary);
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Custom range slider styles */
+input[type="range"] {
+  -webkit-appearance: none;
+  background: var(--color-bg-tertiary);
+  border-radius: 3px;
+  height: 4px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background: var(--color-accent-light);
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: var(--color-accent-light);
+  transform: scale(1.2);
+}
+
+/* Form controls */
+input[type="text"],
+input[type="number"],
+select,
+button {
+  transition: all 0.2s ease;
+}
+
+/* Transitions */
+.smooth-transition {
+  transition: all 0.2s ease;
+}

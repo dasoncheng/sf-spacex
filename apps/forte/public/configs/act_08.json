@@ -1,0 +1,75 @@
+{
+  "Type": 7,
+  "Actions": [
+    {
+      "Start": 0,
+      "Frame": 4,
+      "Skip": 4,
+      "Output": "待机",
+      "Dir": 8
+    },
+    {
+      "Start": 64,
+      "Frame": 6,
+      "Skip": 2,
+      "Output": "行走",
+      "Dir": 8
+    },
+    {
+      "Start": 128,
+      "Frame": 6,
+      "Skip": 2,
+      "Output": "跑步",
+      "Dir": 8
+    },
+    {
+      "Start": 192,
+      "Frame": 1,
+      "Skip": 0,
+      "Output": "预备攻击",
+      "Dir": 8
+    },
+    {
+      "Start": 200,
+      "Frame": 6,
+      "Skip": 2,
+      "Output": "物理攻击",
+      "Dir": 8
+    },
+    {
+      "Start": 264,
+      "Frame": 6,
+      "Skip": 2,
+      "Output": "采矿",
+      "Dir": 8
+    },
+    {
+      "Start": 392,
+      "Frame": 6,
+      "Skip": 2,
+      "Output": "魔法攻击",
+      "Dir": 8
+    },
+    {
+      "Start": 456,
+      "Frame": 2,
+      "Skip": 0,
+      "Output": "采集",
+      "Dir": 8
+    },
+    {
+      "Start": 472,
+      "Frame": 3,
+      "Skip": 5,
+      "Output": "被攻击",
+      "Dir": 8
+    },
+    {
+      "Start": 536,
+      "Frame": 4,
+      "Skip": 4,
+      "Output": "死亡",
+      "Dir": 8
+    }
+  ]
+}

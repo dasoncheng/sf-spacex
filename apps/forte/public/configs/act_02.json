@@ -1,0 +1,47 @@
+{
+  "Type": 1,
+  "Actions": [
+    {
+      "Start": 0,
+      "Frame": 6,
+      "Skip": 4,
+      "Output": "待机",
+      "Dir": 8
+    },
+    {
+      "Start": 80,
+      "Frame": 8,
+      "Skip": 2,
+      "Output": "行走",
+      "Dir": 8
+    },
+    {
+      "Start": 160,
+      "Frame": 8,
+      "Skip": 2,
+      "Output": "物理攻击",
+      "Dir": 8
+    },
+    {
+      "Start": 240,
+      "Frame": 2,
+      "Skip": 0,
+      "Output": "被攻击",
+      "Dir": 8
+    },
+    {
+      "Start": 260,
+      "Frame": 8,
+      "Skip": 2,
+      "Output": "死亡",
+      "Dir": 8
+    },
+    {
+      "Start": 340,
+      "Frame": 10,
+      "Skip": 0,
+      "Output": "展示",
+      "Dir": 2
+    }
+  ]
+}
