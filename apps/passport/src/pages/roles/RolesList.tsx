@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, ExternalLink } from "lucide-vue-next";
-import { rolesService } from "@/services/rolesService";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { getRoles, createRole } from "@/services/roles";
 import type { Role } from "@/types/api";
 import { CreateRoleModal } from "./CreateRoleModal";
 import { format } from "date-fns";
@@ -39,9 +40,9 @@ export const RolesList = defineComponent({
     const loadRoles = async () => {
       try {
         loading.value = true;
-        roles.value = await rolesService.getRoles();
+        roles.value = await getRoles();
       } catch (err: any) {
-        error.value = err.message || "加载角色列表失败";
+        error.value = err.message || "Failed to load roles";
         console.error("Error loading roles:", err);
       } finally {
         loading.value = false;
@@ -60,14 +61,13 @@ export const RolesList = defineComponent({
     }) => {
       try {
         // Call API to create role
-        await rolesService.createRole(roleData);
-        // Reload roles list to show the newly created role
+        await createRole(roleData);
         await loadRoles();
         // Close modal
         isCreateModalOpen.value = false;
       } catch (err: any) {
         console.error("Error creating role:", err);
-        throw err;
+        error.value = err.message || "Failed to create role";
       }
     };
 

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink } from "lucide-vue-next";
-import { applicationsService } from "@/services/applicationsService";
+import { getApplicationById } from "@/services/applications";
 import type { ApplicationDetail as ApplicationDetailType } from "@/types/api";
 
 export const ApplicationDetail = defineComponent({
@@ -48,7 +48,7 @@ export const ApplicationDetail = defineComponent({
 
       try {
         loading.value = true;
-        application.value = await applicationsService.getApplicationById(appId);
+        application.value = await getApplicationById(appId);
       } catch (err: any) {
         error.value = err.message || "Failed to load application details";
         console.error("Error loading application details:", err);
@@ -80,9 +80,7 @@ export const ApplicationDetail = defineComponent({
           <div class="space-y-6">
             {/* Application Info Card */}
             <div class="rounded-lg border bg-card p-6">
-              <h2 class="text-xl font-semibold mb-4">
-                应用信息
-              </h2>
+              <h2 class="text-xl font-semibold mb-4">应用信息</h2>
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <p class="text-sm text-muted-foreground">名称</p>

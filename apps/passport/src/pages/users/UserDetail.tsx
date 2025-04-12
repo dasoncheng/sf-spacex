@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink, PlusCircle, Trash2 } from "lucide-vue-next";
-import { usersService } from "@/services/usersService";
-import { rolesService } from "@/services/rolesService";
+import { getUserById, getUserRoles, removeRole } from "@/services/users";
+import { getRoles } from "@/services/roles";
 import type { UserDetail as UserDetailType, Role } from "@/types/api";
 import {
   AlertDialog,
@@ -87,7 +87,7 @@ export const UserDetail = defineComponent({
 
       try {
         loading.value = true;
-        user.value = await usersService.getUserById(userId);
+        user.value = await getUserById(userId);
       } catch (err: any) {
         error.value = err.message || "Failed to load user details";
         console.error("Error loading user details:", err);
@@ -102,7 +102,7 @@ export const UserDetail = defineComponent({
 
       try {
         loadingRoles.value = true;
-        const allRoles = await rolesService.getRoles();
+        const allRoles = await getRoles();
 
         // Filter out roles that the user already has
         const userRoleIds = new Set(
@@ -123,7 +123,7 @@ export const UserDetail = defineComponent({
       if (!user.value || !selectedRoleId.value) return;
 
       try {
-        await usersService.assignRole(user.value.Id, selectedRoleId.value);
+        await getUserRoles(user.value.Id, selectedRoleId.value);
         await loadUserDetails();
         isAssignRoleModalOpen.value = false;
         selectedRoleId.value = "";
@@ -137,7 +137,7 @@ export const UserDetail = defineComponent({
       if (!user.value || !roleToRemove.value) return;
 
       try {
-        await usersService.removeRole(user.value.Id, roleToRemove.value);
+        await removeRole(user.value.Id, roleToRemove.value);
         await loadUserDetails();
         isRemoveRoleDialogOpen.value = false;
         roleToRemove.value = null;

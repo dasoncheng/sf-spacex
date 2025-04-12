@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { usersService } from "@/services/usersService";
+import { createUser } from "@/services/users";
 
 export const RegisterModal = defineComponent({
   name: "RegisterModal",
@@ -70,7 +70,7 @@ export const RegisterModal = defineComponent({
 
       try {
         isSubmitting.value = true;
-        await usersService.createUser({
+        await createUser({
           email: email.value,
           password: password.value,
         });
@@ -156,7 +156,11 @@ export const RegisterModal = defineComponent({
             </div>
 
             <DialogFooter class="flex-col items-center sm:items-end">
-              <Button type="submit" disabled={isSubmitting.value} class="w-full sm:w-auto">
+              <Button
+                type="submit"
+                disabled={isSubmitting.value}
+                class="w-full sm:w-auto"
+              >
                 {isSubmitting.value ? "注册中..." : "注册"}
               </Button>
 

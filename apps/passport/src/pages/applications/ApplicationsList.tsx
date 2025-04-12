@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, ExternalLink } from "lucide-vue-next";
-import { applicationsService } from "@/services/applicationsService";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { getApplications, createApplication } from "@/services/applications";
 import type { Application } from "@/types/api";
 import { CreateApplicationModal } from "./CreateApplicationModal";
 
@@ -37,7 +38,7 @@ export const ApplicationsList = defineComponent({
     const loadApplications = async () => {
       try {
         loading.value = true;
-        applications.value = await applicationsService.getApplications();
+        applications.value = await getApplications();
       } catch (err: any) {
         error.value = err.message || "Failed to load applications";
         console.error("Error loading applications:", err);
@@ -56,12 +57,14 @@ export const ApplicationsList = defineComponent({
       Description: string;
     }) => {
       try {
-        await applicationsService.createApplication(applicationData);
+        // Call API to create application
+        await createApplication(applicationData);
         await loadApplications();
+        // Close modal
         isCreateModalOpen.value = false;
       } catch (err: any) {
-        console.error("Error creating Application:", err);
-        error.value = err.message || "Failed to create Application";
+        console.error("Error creating application:", err);
+        error.value = err.message || "Failed to create application";
       }
     };
 

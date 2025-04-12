@@ -16,8 +16,18 @@ import {
   Trash2,
   UserPlus,
 } from "lucide-vue-next";
-import { rolesService } from "@/services/rolesService";
-import { usersService } from "@/services/usersService";
+import { getPermissions } from "@/services/permissions";
+import {
+  getRoleById,
+  updateRole,
+  deleteRole as deleteRoleFn,
+  assignPermission,
+  removePermission,
+} from "@/services/roles";
+import {
+  getUsersByRoleId,
+  removeRole as removeUserRole,
+} from "@/services/users";
 import type { RoleDetail as RoleDetailType, UserInfo } from "@/types/api";
 import { CreateRoleModal } from "./CreateRoleModal";
 import { format } from "date-fns";
@@ -91,7 +101,7 @@ export const RoleDetail = defineComponent({
 
       try {
         loading.value = true;
-        role.value = await rolesService.getRoleById(roleId);
+        role.value = await getRoleById(roleId);
       } catch (err: any) {
         error.value = err.message || "加载角色详情失败";
         console.error("Error loading role details:", err);
@@ -106,7 +116,7 @@ export const RoleDetail = defineComponent({
 
       try {
         loadingUsers.value = true;
-        roleUsers.value = await usersService.getUsersByRoleId(role.value.id);
+        roleUsers.value = await getUsersByRoleId(role.value.id);
       } catch (err: any) {
         console.error("Error loading role users:", err);
         error.value = err.message || "加载角色用户失败";
@@ -123,7 +133,7 @@ export const RoleDetail = defineComponent({
       if (!role.value) return;
 
       try {
-        await rolesService.updateRole(role.value.id, roleData);
+        await updateRole(role.value.id, roleData);
         await loadRoleDetails();
         isEditModalOpen.value = false;
       } catch (err: any) {
@@ -137,7 +147,7 @@ export const RoleDetail = defineComponent({
       if (!role.value) return;
 
       try {
-        await rolesService.deleteRole(role.value.id);
+        await deleteRoleFn(role.value.id);
         router.push("/roles");
       } catch (err: any) {
         console.error("Error deleting role:", err);
@@ -150,7 +160,7 @@ export const RoleDetail = defineComponent({
       if (!role.value) return;
 
       try {
-        await rolesService.assignPermission(role.value.id, { permissionId });
+        await assignPermission(role.value.id, { permissionId });
         await loadRoleDetails();
         isAssignPermissionModalOpen.value = false;
       } catch (err: any) {
@@ -164,10 +174,7 @@ export const RoleDetail = defineComponent({
       if (!role.value || !permissionToRemove.value) return;
 
       try {
-        await rolesService.removePermission(
-          role.value.id,
-          permissionToRemove.value
-        );
+        await removePermission(role.value.id, permissionToRemove.value);
         permissionToRemove.value = null;
         isPermissionRemoveDialogOpen.value = false;
         await loadRoleDetails();
@@ -182,7 +189,7 @@ export const RoleDetail = defineComponent({
       if (!role.value) return;
 
       try {
-        await rolesService.assignUser(role.value.id, { userId });
+        await assignPermission(role.value.id, { userId });
         await loadRoleUsers();
         isAssignUserModalOpen.value = false;
       } catch (err: any) {
@@ -196,7 +203,7 @@ export const RoleDetail = defineComponent({
       if (!role.value || !userToRemove.value) return;
 
       try {
-        await rolesService.removeUser(role.value.id, userToRemove.value);
+        await removeUserRole(role.value.id, userToRemove.value);
         userToRemove.value = null;
         isUserRemoveDialogOpen.value = false;
         await loadRoleUsers();

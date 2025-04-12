@@ -10,7 +10,13 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-vue-next";
-import { licensesService } from "@/services/licensesService";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { LicenseForm } from "@/components/LicenseForm";
+import {
+  getLicenses,
+  createLicense,
+  batchCreateLicenses,
+} from "@/services/licenses";
 import type {
   BatchCreateLicenseDto,
   CreateLicenseDto,
@@ -58,7 +64,7 @@ export const LicensesList = defineComponent({
     const loadLicenses = async () => {
       try {
         loading.value = true;
-        licenses.value = await licensesService.getLicenses();
+        licenses.value = await getLicenses();
       } catch (err: any) {
         error.value = err.message || "Failed to load licenses";
         console.error("Error loading licenses:", err);
@@ -81,7 +87,7 @@ export const LicensesList = defineComponent({
 
     const handleLicensesCreated = async (licensesData: CreateLicenseDto) => {
       try {
-        await licensesService.createLicense(licensesData);
+        await createLicense(licensesData);
         await loadLicenses();
         isCreateModalOpen.value = false;
       } catch (err: any) {
@@ -94,7 +100,7 @@ export const LicensesList = defineComponent({
       licensesData: BatchCreateLicenseDto
     ) => {
       try {
-        await licensesService.batchCreateLicenses(licensesData);
+        await batchCreateLicenses(licensesData);
         await loadLicenses();
         isCreateModalOpen.value = false;
       } catch (err: any) {

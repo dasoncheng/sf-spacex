@@ -15,8 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { rolesService } from "@/services/rolesService";
+import { rolesService } from "@/services/roles";
 import type { Permission } from "@/types/api";
+import { getPermissions } from "@/services/permissions";
 
 export const AssignPermissionModal = defineComponent({
   name: "AssignPermissionModal",
@@ -53,7 +54,7 @@ export const AssignPermissionModal = defineComponent({
     const loadPermissions = async () => {
       try {
         isLoading.value = true;
-        const permissions = await rolesService.getPermissions();
+        const permissions = await getPermissions();
         // Filter out permissions that are already assigned
         availablePermissions.value = permissions.filter(
           (permission) => !props.existingPermissionIds.includes(permission.id)

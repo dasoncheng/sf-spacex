@@ -2,7 +2,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ExternalLink } from "lucide-vue-next";
-import { licensesService } from "@/services/licensesService";
+import { getLicenseById } from "@/services/licenses";
 import type { LicenseDetail as LicenseDetailType } from "@/types/api";
 
 export const LicenseDetail = defineComponent({
@@ -66,7 +66,7 @@ export const LicenseDetail = defineComponent({
 
       try {
         loading.value = true;
-        license.value = await licensesService.getLicenseById(licenseId);
+        license.value = await getLicenseById(licenseId);
       } catch (err: any) {
         error.value = err.message || "Failed to load license details";
         console.error("Error loading license details:", err);

@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { usersService } from "@/services/usersService";
+import { getUnassignedUsers } from "@/services/users";
 import type { UserInfo } from "@/types/api";
 import {
   Table,
@@ -63,7 +63,7 @@ export const AssignUserModal = defineComponent({
         error.value = null;
 
         // 获取角色未分配的用户
-        users.value = await usersService.getUnassignedUsers(props.roleId);
+        users.value = await getUnassignedUsers(props.roleId);
       } catch (err: any) {
         console.error("Error loading users:", err);
         error.value = err.message || "加载用户列表失败";
