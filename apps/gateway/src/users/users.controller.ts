@@ -6,11 +6,11 @@ import {
   Param,
   UseInterceptors,
   ClassSerializerInterceptor,
-  UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UserDetailDto, UserResponseDto } from './dto/user.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Permission } from '../auth/decorators/permission.decorator';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -22,15 +22,41 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
+  @Permission('users:read')
   async findAll(): Promise<UserResponseDto[]> {
     return this.usersService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
+  @Permission('users:read')
   async findOne(@Param('id') id: string): Promise<UserDetailDto> {
     return this.usersService.findOne(id);
+  }
+
+  @Get(':id/roles')
+  @Permission('users:read')
+  async getUserRoles(@Param('id') userId: string) {
+    return this.usersService.getUserRoles(userId);
+  }
+
+  @Post(':id/roles/:roleId')
+  @Permission('users:update')
+  async assignRole(
+    @Param('id') userId: string,
+    @Param('roleId') roleId: string,
+  ) {
+    await this.usersService.assignRole(userId, roleId);
+    return { message: '角色分配成功' };
+  }
+
+  @Delete(':id/roles/:roleId')
+  @Permission('users:update')
+  async removeRole(
+    @Param('id') userId: string,
+    @Param('roleId') roleId: string,
+  ) {
+    await this.usersService.removeRole(userId, roleId);
+    return { message: '角色移除成功' };
   }
 }

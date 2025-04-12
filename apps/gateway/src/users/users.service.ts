@@ -64,6 +64,11 @@ export class UsersService {
             Application: true,
           },
         },
+        roles: {
+          include: {
+            role: true,
+          },
+        },
       },
     });
 
@@ -80,13 +85,21 @@ export class UsersService {
       expiresAt: activation.ExpiresAt,
     }));
 
+    // 映射用户角色信息
+    const roles = user.roles.map((userRole) => ({
+      id: userRole.role.Id,
+      name: userRole.role.Name,
+      description: userRole.role.Description,
+    }));
+
     return {
-      ...omit(user, 'Password'),
+      ...omit(user, 'Password', 'roles'),
       applications,
+      roles,
     } as UserDetailDto;
   }
 
-  async findOneByEmail(email: string): Promise<any> {
+  async findOneByEmail(email: string) {
     const user = await this.prisma.user.findUnique({
       where: { Email: email },
     });
@@ -96,5 +109,116 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  /**
+   * 为用户分配角色
+   */
+  async assignRole(userId: string, roleId: string): Promise<void> {
+    // 检查用户是否存在
+    const user = await this.prisma.user.findUnique({
+      where: { Id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`用户不存在: ${userId}`);
+    }
+
+    // 检查角色是否存在
+    const role = await this.prisma.role.findUnique({
+      where: { Id: roleId },
+    });
+
+    if (!role) {
+      throw new NotFoundException(`角色不存在: ${roleId}`);
+    }
+
+    // 检查用户是否已拥有该角色
+    const existingUserRole = await this.prisma.userRole.findFirst({
+      where: {
+        UserId: userId,
+        RoleId: roleId,
+      },
+    });
+
+    if (existingUserRole) {
+      throw new ConflictException(`用户已拥有此角色`);
+    }
+
+    // 为用户分配角色
+    await this.prisma.userRole.create({
+      data: {
+        UserId: userId,
+        RoleId: roleId,
+      },
+    });
+  }
+
+  /**
+   * 移除用户的角色
+   */
+  async removeRole(userId: string, roleId: string): Promise<void> {
+    // 检查用户是否存在
+    const user = await this.prisma.user.findUnique({
+      where: { Id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`用户不存在: ${userId}`);
+    }
+
+    // 检查角色是否存在
+    const role = await this.prisma.role.findUnique({
+      where: { Id: roleId },
+    });
+
+    if (!role) {
+      throw new NotFoundException(`角色不存在: ${roleId}`);
+    }
+
+    // 检查用户是否拥有该角色
+    const userRole = await this.prisma.userRole.findFirst({
+      where: {
+        UserId: userId,
+        RoleId: roleId,
+      },
+    });
+
+    if (!userRole) {
+      throw new BadRequestException(`用户未拥有此角色`);
+    }
+
+    // 移除用户角色
+    await this.prisma.userRole.delete({
+      where: {
+        Id: userRole.Id,
+      },
+    });
+  }
+
+  /**
+   * 获取用户所有的角色
+   */
+  async getUserRoles(userId: string): Promise<any[]> {
+    const user = await this.prisma.user.findUnique({
+      where: { Id: userId },
+      include: {
+        roles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`用户不存在: ${userId}`);
+    }
+
+    return user.roles.map((userRole) => ({
+      id: userRole.role.Id,
+      name: userRole.role.Name,
+      description: userRole.role.Description,
+    }));
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ActivationsService } from './activations.service';
 import {
   ActivationResponseDto,
@@ -6,20 +6,22 @@ import {
   ValidityCheckDto,
   ValidityResponseDto,
 } from './dto/activation.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Public } from '../auth/decorators/public.decorator';
+import { Permission } from '../auth/decorators/permission.decorator';
 
 @Controller('activations')
 export class ActivationsController {
   constructor(private readonly activationsService: ActivationsService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
+  @Permission('activations:create')
   async create(
     @Body() createActivationDto: CreateActivationDto,
   ): Promise<ActivationResponseDto> {
     return this.activationsService.create(createActivationDto);
   }
 
+  @Public()
   @Post('check')
   async checkValidity(
     @Body() checkDto: ValidityCheckDto,

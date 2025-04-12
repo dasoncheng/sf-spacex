@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param } from '@nestjs/common';
 import { LicensesService } from './licenses.service';
 import {
   BatchCreateLicenseDto,
@@ -6,14 +6,14 @@ import {
   LicenseDetailDto,
   LicenseResponseDto,
 } from './dto/license.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Permission } from '../auth/decorators/permission.decorator';
 
 @Controller('licenses')
-@UseGuards(JwtAuthGuard)
 export class LicensesController {
   constructor(private readonly licensesService: LicensesService) {}
 
   @Post()
+  @Permission('licenses:create')
   async create(
     @Body() createLicenseDto: CreateLicenseDto,
   ): Promise<LicenseResponseDto> {
@@ -21,6 +21,7 @@ export class LicensesController {
   }
 
   @Post('batch')
+  @Permission('licenses:create')
   async batchCreate(
     @Body() batchCreateDto: BatchCreateLicenseDto,
   ): Promise<LicenseResponseDto[]> {
@@ -28,11 +29,13 @@ export class LicensesController {
   }
 
   @Get()
+  @Permission('licenses:read')
   async findAll(): Promise<LicenseResponseDto[]> {
     return this.licensesService.findAll();
   }
 
   @Get(':id')
+  @Permission('licenses:read')
   async findOne(@Param('id') id: string): Promise<LicenseDetailDto> {
     return this.licensesService.findOne(id);
   }

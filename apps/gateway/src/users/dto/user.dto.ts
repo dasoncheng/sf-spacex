@@ -35,4 +35,18 @@ export class UserDetailDto extends UserResponseDto {
     activatedAt: Date;
     expiresAt?: Date;
   }[];
+
+  // 添加用户角色信息
+  roles?: {
+    id: string;
+    name: string;
+    description?: string;
+  }[];
+}
+
+// 用户角色操作DTO
+export class AssignRoleDto {
+  @IsString()
+  @IsNotEmpty()
+  roleId: string;
 }

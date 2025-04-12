@@ -23,6 +23,9 @@ model User {
 
   // 关联
   Activations Activation[] // 用户的激活记录，表示用户激活的应用
+
+  // 角色关联（RBAC）
+  roles UserRole[] // 用户的角色列表
 }
 
 // 应用模型
@@ -65,4 +68,61 @@ model Activation {
 
   LicenseId String  @unique // 许可证/卡密ID，表示激活使用的许可证
   License   License @relation(fields: [LicenseId], references: [Id]) // 使用的许可证，外键引用 License 表的 Id
+}
+
+// RBAC权限模型 - 角色表
+model Role {
+  Id          String   @id @default(uuid()) // 角色的唯一标识符
+  Name        String   @unique // 角色名称，唯一，如：admin, user, manager等
+  Description String? // 角色描述，可选，提供额外信息
+  CreatedAt   DateTime @default(now()) @db.Timestamptz(6)
+  UpdatedAt   DateTime @updatedAt @db.Timestamptz(6)
+
+  // 关联
+  permissions RolePermission[] // 角色拥有的权限列表
+  users       UserRole[] // 拥有该角色的用户列表
+}
+
+// RBAC权限模型 - 权限表
+model Permission {
+  Id          String   @id @default(uuid()) // 权限的唯一标识符
+  Name        String   @unique // 权限名称，唯一，如：create:user, read:user, update:user等
+  Description String? // 权限描述，可选，提供额外信息
+  Resource    String // 资源名称，如：user, application, license等
+  Action      String // 操作类型，如：create, read, update, delete等
+  CreatedAt   DateTime @default(now()) @db.Timestamptz(6)
+  UpdatedAt   DateTime @updatedAt @db.Timestamptz(6)
+
+  // 关联
+  roles RolePermission[] // 拥有该权限的角色列表
+}
+
+// RBAC权限模型 - 用户角色关联表
+model UserRole {
+  Id        String   @id @default(uuid())
+  UserId    String
+  RoleId    String
+  CreatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  // 关联
+  user User @relation(fields: [UserId], references: [Id], onDelete: Cascade)
+  role Role @relation(fields: [RoleId], references: [Id], onDelete: Cascade)
+
+  // 组合约束，确保一个用户只能拥有一次特定角色
+  @@unique([UserId, RoleId])
+}
+
+// RBAC权限模型 - 角色权限关联表
+model RolePermission {
+  Id           String   @id @default(uuid())
+  RoleId       String
+  PermissionId String
+  CreatedAt    DateTime @default(now()) @db.Timestamptz(6)
+
+  // 关联
+  role       Role       @relation(fields: [RoleId], references: [Id], onDelete: Cascade)
+  permission Permission @relation(fields: [PermissionId], references: [Id], onDelete: Cascade)
+
+  // 组合约束，确保一个角色只能拥有一次特定权限
+  @@unique([RoleId, PermissionId])
 }
