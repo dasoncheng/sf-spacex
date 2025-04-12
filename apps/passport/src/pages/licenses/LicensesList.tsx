@@ -111,14 +111,14 @@ export const LicensesList = defineComponent({
     return () => (
       <div>
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl font-bold">许可证管理</h1>
+          <h1 class="text-2xl font-bold">卡密管理</h1>
           <div class="flex gap-2">
             <Button
               class="flex gap-1 items-center"
               onClick={showCreateLicenseModal}
             >
               <PlusCircle class="h-4 w-4" />
-              新建许可证
+              新建卡密
             </Button>
             <Button variant="outline" onClick={showBatchCreateModal}>
               批量生成
@@ -127,7 +127,7 @@ export const LicensesList = defineComponent({
         </div>
 
         {loading.value ? (
-          <div class="text-center py-8">加载许可证中...</div>
+          <div class="text-center py-8">加载卡密中...</div>
         ) : error.value ? (
           <div class="text-center py-8 text-red-500">{error.value}</div>
         ) : (
@@ -135,7 +135,7 @@ export const LicensesList = defineComponent({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>许可证 Key</TableHead>
+                  <TableHead>卡密 Key</TableHead>
                   <TableHead>状态</TableHead>
                   <TableHead>有效期</TableHead>
                   <TableHead>创建时间</TableHead>
@@ -145,7 +145,7 @@ export const LicensesList = defineComponent({
                 {licenses.value.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} class="text-center py-8">
-                      未找到许可证
+                      未找到卡密
                     </TableCell>
                   </TableRow>
                 ) : (

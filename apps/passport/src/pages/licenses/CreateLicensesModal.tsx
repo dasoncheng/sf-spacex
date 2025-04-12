@@ -94,7 +94,7 @@ export const CreateLicensesModal = defineComponent({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {props.isSingle ? "新建许可证" : "批量新建许可证"}
+              {props.isSingle ? "新建卡密" : "批量新建卡密"}
             </DialogTitle>
           </DialogHeader>
 
@@ -134,7 +134,7 @@ export const CreateLicensesModal = defineComponent({
                 取消
               </Button>
               <Button type="submit" disabled={isSubmitting.value}>
-                {isSubmitting.value ? "新建中..." : "新建许可证"}
+                {isSubmitting.value ? "新建中..." : "新建卡密"}
               </Button>
             </DialogFooter>
           </form>
