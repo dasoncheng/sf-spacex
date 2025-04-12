@@ -1,20 +1,20 @@
-import { api } from "./api";
+import { http } from "../utils/http";
 import type { UserInfo, UserDetail } from "@/types/api";
 
 class UsersService {
   // 获取所有用户列表
   async getUsers(): Promise<UserInfo[]> {
-    return await api.get<UserInfo[]>("/users");
+    return await http.get<UserInfo[]>("/users");
   }
 
   // 根据ID获取用户详情
   async getUserById(id: string): Promise<UserDetail> {
-    return await api.get<UserDetail>(`/users/${id}`);
+    return await http.get<UserDetail>(`/users/${id}`);
   }
 
   // 获取用户的角色列表
   async getUserRoles(userId: string): Promise<any> {
-    return await api.get(`/users/${userId}/roles`);
+    return await http.get(`/users/${userId}/roles`);
   }
 
   // 根据角色ID获取该角色下的用户列表
@@ -55,12 +55,12 @@ class UsersService {
 
   // 为用户分配角色
   async assignRole(userId: string, roleId: string): Promise<void> {
-    await api.post(`/users/${userId}/roles/${roleId}`, {});
+    await http.post(`/users/${userId}/roles/${roleId}`, {});
   }
 
   // 移除用户角色
   async removeRole(userId: string, roleId: string): Promise<void> {
-    await api.delete(`/users/${userId}/roles/${roleId}`);
+    await http.delete(`/users/${userId}/roles/${roleId}`);
   }
 }
 

@@ -46,7 +46,7 @@ const handleResponse = async (response: Response) => {
 };
 
 // Base API methods
-export const api = {
+export const http = {
   // GET request
   async get<T>(endpoint: string): Promise<T> {
     const response = await fetch(`${environment.value?.baseUrl}${endpoint}`, {
