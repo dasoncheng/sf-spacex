@@ -15,7 +15,7 @@ const initEnvironment = async () => {
   } catch (error) {
     environment.value = {
       mode: "local",
-      baseUrl: "api",
+      baseUrl: "/api",
     };
   }
 };
