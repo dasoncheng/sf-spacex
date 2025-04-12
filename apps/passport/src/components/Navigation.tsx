@@ -1,6 +1,13 @@
 import { defineComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { Users, Key, Package, Settings, KeyRound } from "lucide-vue-next";
+import {
+  Users,
+  Key,
+  Package,
+  Settings,
+  KeyRound,
+  Shield,
+} from "lucide-vue-next";
 
 export const Navigation = defineComponent({
   name: "Navigation",
@@ -23,6 +30,11 @@ export const Navigation = defineComponent({
         title: "许可证",
         path: "/licenses",
         icon: KeyRound,
+      },
+      {
+        title: "角色管理",
+        path: "/roles",
+        icon: Shield,
       },
     ];
 

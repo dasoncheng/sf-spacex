@@ -1,4 +1,4 @@
-import type { User, UserDetail } from "@/types/api";
+import type { User, UserDetail, AssignRoleDto } from "@/types/api";
 import { api } from "./api";
 
 export const usersService = {
@@ -18,5 +18,20 @@ export const usersService = {
     password: string;
   }): Promise<User> {
     return await api.post("/users", userData);
+  },
+
+  // Get user roles
+  async getUserRoles(userId: string): Promise<any[]> {
+    return await api.get(`/users/${userId}/roles`);
+  },
+
+  // Assign role to user
+  async assignRole(userId: string, roleId: string): Promise<void> {
+    return await api.post(`/users/${userId}/roles/${roleId}`, {});
+  },
+
+  // Remove role from user
+  async removeRole(userId: string, roleId: string): Promise<void> {
+    return await api.delete(`/users/${userId}/roles/${roleId}`);
   },
 };

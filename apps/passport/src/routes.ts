@@ -10,6 +10,8 @@ import { UserDetail } from "./pages/users/UserDetail";
 import { ApplicationDetail } from "./pages/applications/ApplicationDetail";
 import { LicenseDetail } from "./pages/licenses/LicenseDetail";
 import { MainLayout } from "./layouts/MainLayout";
+import { RolesList } from "./pages/roles/RolesList";
+import { RoleDetail } from "./pages/roles/RoleDetail";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -17,15 +19,25 @@ const routes: RouteRecordRaw[] = [
     component: MainLayout,
     redirect: "/users",
     children: [
-      { path: "users", component: UsersList, meta: { label: '用户列表' } },
+      { path: "users", component: UsersList, meta: { label: "用户列表" } },
       { path: "users/:id", component: UserDetail },
-      { path: "licenses", component: LicensesList, meta: { label: '许可证列表' } },
+      {
+        path: "licenses",
+        component: LicensesList,
+        meta: { label: "许可证列表" },
+      },
       { path: "licenses/:id", component: LicenseDetail },
-      { path: "applications", component: ApplicationsList, meta: { label: '应用列表' } },
+      {
+        path: "applications",
+        component: ApplicationsList,
+        meta: { label: "应用列表" },
+      },
       { path: "applications/:id", component: ApplicationDetail },
+      { path: "roles", component: RolesList, meta: { label: "角色列表" } },
+      { path: "roles/:id", component: RoleDetail },
     ],
   },
-  { path: '/:pathMatch(.*)*', redirect: '/users' }, // Catch-all route
+  { path: "/:pathMatch(.*)*", redirect: "/users" }, // Catch-all route
 ];
 
 const router = createRouter({

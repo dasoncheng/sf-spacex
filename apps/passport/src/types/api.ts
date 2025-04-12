@@ -14,11 +14,55 @@ export interface UserDetail extends User {
     activatedAt: string;
     expiresAt?: string;
   }[];
+
+  roles?: Role[];
 }
 
 export interface CreateUserDto {
   Email: string;
   Password: string;
+}
+
+// Role types
+export interface Role {
+  id: string;
+  name: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateRoleDto {
+  name: string;
+  description?: string;
+}
+
+export interface UpdateRoleDto {
+  name?: string;
+  description?: string;
+}
+
+export interface RoleDetail extends Role {
+  permissions: Permission[];
+}
+
+export interface AssignRoleDto {
+  roleId: string;
+}
+
+// Permission types
+export interface Permission {
+  id: string;
+  name: string;
+  description?: string;
+  resource: string;
+  action: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface AssignPermissionDto {
+  permissionId: string;
 }
 
 // Application types
