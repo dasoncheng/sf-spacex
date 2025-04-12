@@ -205,7 +205,7 @@ export const UserDetail = defineComponent({
             {/* Roles Section */}
             <div class="rounded-lg border">
               <div class="flex items-center justify-between p-4 border-b">
-                <h2 class="text-xl font-semibold">角色管理</h2>
+                <h2 class="text-xl font-semibold">角色</h2>
                 <Button
                   class="flex gap-1 items-center"
                   onClick={openAssignRoleModal}

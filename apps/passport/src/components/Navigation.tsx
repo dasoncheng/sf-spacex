@@ -32,7 +32,7 @@ export const Navigation = defineComponent({
         icon: KeyRound,
       },
       {
-        title: "角色管理",
+        title: "角色",
         path: "/roles",
         icon: Shield,
       },

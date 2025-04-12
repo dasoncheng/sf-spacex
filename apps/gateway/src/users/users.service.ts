@@ -64,9 +64,9 @@ export class UsersService {
             Application: true,
           },
         },
-        roles: {
+        Roles: {
           include: {
-            role: true,
+            Role: true,
           },
         },
       },
@@ -86,14 +86,14 @@ export class UsersService {
     }));
 
     // 映射用户角色信息
-    const roles = user.roles.map((userRole) => ({
-      id: userRole.role.Id,
-      name: userRole.role.Name,
-      description: userRole.role.Description,
+    const roles = user.Roles.map((userRole) => ({
+      id: userRole.Role.Id,
+      name: userRole.Role.Name,
+      description: userRole.Role.Description,
     }));
 
     return {
-      ...omit(user, 'Password', 'roles'),
+      ...omit(user, 'Password', 'Roles'),
       applications,
       roles,
     } as UserDetailDto;
@@ -203,9 +203,9 @@ export class UsersService {
     const user = await this.prisma.user.findUnique({
       where: { Id: userId },
       include: {
-        roles: {
+        Roles: {
           include: {
-            role: true,
+            Role: true,
           },
         },
       },
@@ -215,10 +215,10 @@ export class UsersService {
       throw new NotFoundException(`用户不存在: ${userId}`);
     }
 
-    return user.roles.map((userRole) => ({
-      id: userRole.role.Id,
-      name: userRole.role.Name,
-      description: userRole.role.Description,
+    return user.Roles.map((userRole) => ({
+      id: userRole.Role.Id,
+      name: userRole.Role.Name,
+      description: userRole.Role.Description,
     }));
   }
 }

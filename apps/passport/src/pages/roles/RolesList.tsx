@@ -79,7 +79,7 @@ export const RolesList = defineComponent({
     return () => (
       <div>
         <div class="flex items-center justify-between mb-6">
-          <h1 class="text-2xl font-bold">角色管理</h1>
+          <h1 class="text-2xl font-bold">角色</h1>
           <Button class="flex gap-1 items-center" onClick={showCreateRoleModal}>
             <PlusCircle class="h-4 w-4" />
             添加角色

@@ -4,8 +4,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRoleDto, RoleDto, UpdateRoleDto } from './dto/role.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class RolesService {
@@ -28,21 +30,23 @@ export class RolesService {
       },
     });
 
-    return this.mapToDto(role);
+    return plainToInstance(RoleDto, role, { excludeExtraneousValues: true });
   }
 
-  async findAll(): Promise<RoleDto[]> {
+  async findAll() {
     const roles = await this.prisma.role.findMany();
-    return roles.map(this.mapToDto);
+    return roles.map((role) => {
+      return plainToInstance(RoleDto, role, { excludeExtraneousValues: true });
+    });
   }
 
   async findOne(id: string): Promise<RoleDto> {
     const role = await this.prisma.role.findUnique({
       where: { Id: id },
       include: {
-        permissions: {
+        Permissions: {
           include: {
-            permission: true,
+            Permission: true,
           },
         },
       },
@@ -51,8 +55,9 @@ export class RolesService {
     if (!role) {
       throw new NotFoundException(`ID为${id}的角色不存在`);
     }
-
-    return this.mapToDto(role);
+    return plainToInstance(RoleDto, role, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async update(id: string, updateRoleDto: UpdateRoleDto): Promise<RoleDto> {
@@ -78,7 +83,7 @@ export class RolesService {
       },
     });
 
-    return this.mapToDto(role);
+    return plainToInstance(RoleDto, role, { excludeExtraneousValues: true });
   }
 
   async remove(id: string): Promise<void> {
@@ -156,15 +161,5 @@ export class RolesService {
         Id: existingRolePermission.Id,
       },
     });
-  }
-
-  private mapToDto(role: any): RoleDto {
-    return {
-      id: role.Id,
-      name: role.Name,
-      description: role.Description,
-      createdAt: role.CreatedAt,
-      updatedAt: role.UpdatedAt,
-    };
   }
 }

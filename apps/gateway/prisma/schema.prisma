@@ -25,7 +25,7 @@ model User {
   Activations Activation[] // 用户的激活记录，表示用户激活的应用
 
   // 角色关联（RBAC）
-  roles UserRole[] // 用户的角色列表
+  Roles UserRole[] // 用户的角色列表
 }
 
 // 应用模型
@@ -79,8 +79,8 @@ model Role {
   UpdatedAt   DateTime @updatedAt @db.Timestamptz(6)
 
   // 关联
-  permissions RolePermission[] // 角色拥有的权限列表
-  users       UserRole[] // 拥有该角色的用户列表
+  Permissions RolePermission[] // 角色拥有的权限列表
+  Users       UserRole[] // 拥有该角色的用户列表
 }
 
 // RBAC权限模型 - 权限表
@@ -94,7 +94,7 @@ model Permission {
   UpdatedAt   DateTime @updatedAt @db.Timestamptz(6)
 
   // 关联
-  roles RolePermission[] // 拥有该权限的角色列表
+  Roles RolePermission[] // 拥有该权限的角色列表
 }
 
 // RBAC权限模型 - 用户角色关联表
@@ -105,8 +105,8 @@ model UserRole {
   CreatedAt DateTime @default(now()) @db.Timestamptz(6)
 
   // 关联
-  user User @relation(fields: [UserId], references: [Id], onDelete: Cascade)
-  role Role @relation(fields: [RoleId], references: [Id], onDelete: Cascade)
+  User User @relation(fields: [UserId], references: [Id], onDelete: Cascade)
+  Role Role @relation(fields: [RoleId], references: [Id], onDelete: Cascade)
 
   // 组合约束，确保一个用户只能拥有一次特定角色
   @@unique([UserId, RoleId])
@@ -120,8 +120,8 @@ model RolePermission {
   CreatedAt    DateTime @default(now()) @db.Timestamptz(6)
 
   // 关联
-  role       Role       @relation(fields: [RoleId], references: [Id], onDelete: Cascade)
-  permission Permission @relation(fields: [PermissionId], references: [Id], onDelete: Cascade)
+  Role       Role       @relation(fields: [RoleId], references: [Id], onDelete: Cascade)
+  Permission Permission @relation(fields: [PermissionId], references: [Id], onDelete: Cascade)
 
   // 组合约束，确保一个角色只能拥有一次特定权限
   @@unique([RoleId, PermissionId])

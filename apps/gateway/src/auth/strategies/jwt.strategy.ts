@@ -4,6 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { UsersService } from '../../users/users.service';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
+import { AuthenticatedUser } from '../interfaces/authenticated-user.interface';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
@@ -16,22 +17,22 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get('JWT_SECRET') || 'your-secret-key-here',
+      secretOrKey: configService.get('JWT_SECRET') ?? 'your-secret-key-here',
     });
   }
 
-  async validate(payload: JwtPayload) {
+  async validate(payload: JwtPayload): Promise<AuthenticatedUser> {
     // 查询用户并包含角色和权限信息
     const user = await this.prisma.user.findUnique({
       where: { Id: payload.sub },
       include: {
-        roles: {
+        Roles: {
           include: {
-            role: {
+            Role: {
               include: {
-                permissions: {
+                Permissions: {
                   include: {
-                    permission: true,
+                    Permission: true,
                   },
                 },
               },
@@ -46,13 +47,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     // 提取用户所有角色及其权限
-    const roleNames = user.roles.map(ur => ur.role.Name);
+    const roleNames = user.Roles.map((ur) => ur.Role.Name);
 
     // 提取所有权限名称
     const permissions = new Set<string>();
-    for (const userRole of user.roles) {
-      for (const rolePermission of userRole.role.permissions) {
-        permissions.add(rolePermission.permission.Name);
+    for (const userRole of user.Roles) {
+      for (const rolePermission of userRole.Role.Permissions) {
+        permissions.add(rolePermission.Permission.Name);
       }
     }
 

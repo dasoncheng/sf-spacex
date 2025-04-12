@@ -8,6 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { PrismaService } from '../../prisma/prisma.service';
 import { PERMISSION_KEY } from '../decorators/permission.decorator';
+import { RequestWithUser } from '../interfaces/authenticated-user.interface';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
@@ -28,8 +29,7 @@ export class PermissionGuard implements CanActivate {
     if (!requiredPermissions || requiredPermissions.length === 0) {
       return true;
     }
-
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<RequestWithUser>();
     const { user } = request;
 
     // 如果没有用户信息，则表示未通过身份验证
@@ -54,13 +54,13 @@ export class PermissionGuard implements CanActivate {
       const userWithRoles = await this.prisma.user.findUnique({
         where: { Id: user.userId },
         include: {
-          roles: {
+          Roles: {
             include: {
-              role: {
+              Role: {
                 include: {
-                  permissions: {
+                  Permissions: {
                     include: {
-                      permission: true,
+                      Permission: true,
                     },
                   },
                 },
@@ -77,9 +77,9 @@ export class PermissionGuard implements CanActivate {
 
       // 提取用户所有角色拥有的权限名称
       const permissionsSet = new Set<string>();
-      for (const userRole of userWithRoles.roles) {
-        for (const rolePermission of userRole.role.permissions) {
-          permissionsSet.add(rolePermission.permission.Name);
+      for (const userRole of userWithRoles.Roles) {
+        for (const rolePermission of userRole.Role.Permissions) {
+          permissionsSet.add(rolePermission.Permission.Name);
         }
       }
 
