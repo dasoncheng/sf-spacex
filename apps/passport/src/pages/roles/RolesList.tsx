@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-vue-next";
+import { PlusCircle, ExternalLink } from "lucide-vue-next";
 import { rolesService } from "@/services/rolesService";
 import type { Role } from "@/types/api";
 import { CreateRoleModal } from "./CreateRoleModal";
@@ -98,25 +98,32 @@ export const RolesList = defineComponent({
                   <TableHead>角色名称</TableHead>
                   <TableHead>描述</TableHead>
                   <TableHead>创建时间</TableHead>
+                  <TableHead class="text-right">操作</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {roles.value.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={3} class="text-center py-8">
+                    <TableCell colSpan={4} class="text-center py-8">
                       未找到角色
                     </TableCell>
                   </TableRow>
                 ) : (
                   roles.value.map((role) => (
-                    <TableRow
-                      key={role.id}
-                      class="cursor-pointer hover:bg-muted/50"
-                      onClick={() => viewRoleDetails(role.id)}
-                    >
+                    <TableRow key={role.id}>
                       <TableCell class="font-medium">{role.name}</TableCell>
                       <TableCell>{role.description || "无描述"}</TableCell>
                       <TableCell>{formatDate(role.createdAt)}</TableCell>
+                      <TableCell class="text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => viewRoleDetails(role.id)}
+                        >
+                          <ExternalLink class="h-4 w-4 mr-1" />
+                          查看详情
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))
                 )}

@@ -1,37 +1,67 @@
-import type { User, UserDetail, AssignRoleDto } from "@/types/api";
 import { api } from "./api";
+import type { UserInfo, UserDetail } from "@/types/api";
 
-export const usersService = {
-  // Get all users
-  async getUsers(): Promise<User[]> {
-    return await api.get("/users");
-  },
+class UsersService {
+  // 获取所有用户列表
+  async getUsers(): Promise<UserInfo[]> {
+    return await api.get<UserInfo[]>("/users");
+  }
 
-  // Get user by ID
+  // 根据ID获取用户详情
   async getUserById(id: string): Promise<UserDetail> {
-    return await api.get(`/users/${id}`);
-  },
+    return await api.get<UserDetail>(`/users/${id}`);
+  }
 
-  // Create a new user
-  async createUser(userData: {
-    email: string;
-    password: string;
-  }): Promise<User> {
-    return await api.post("/users", userData);
-  },
-
-  // Get user roles
-  async getUserRoles(userId: string): Promise<any[]> {
+  // 获取用户的角色列表
+  async getUserRoles(userId: string): Promise<any> {
     return await api.get(`/users/${userId}/roles`);
-  },
+  }
 
-  // Assign role to user
+  // 根据角色ID获取该角色下的用户列表
+  async getUsersByRoleId(roleId: string): Promise<UserInfo[]> {
+    // 这里我们需要添加一个新的API来获取角色下的用户
+    // 由于gateway项目中没有直接提供此API，我们可能需要在Gateway中添加
+    // 目前可以先调用已有的API，然后在前端进行过滤
+    const allUsers = await this.getUsers();
+    const roleUsers: UserInfo[] = [];
+
+    // 为每个用户获取角色信息，如果包含当前roleId则添加到结果中
+    for (const user of allUsers) {
+      try {
+        const userDetail = await this.getUserById(user.id);
+        if (
+          userDetail.roles &&
+          userDetail.roles.some((role) => role.id === roleId)
+        ) {
+          roleUsers.push(user);
+        }
+      } catch (error) {
+        console.error(`Error fetching roles for user ${user.id}:`, error);
+      }
+    }
+
+    return roleUsers;
+  }
+
+  // 获取未分配给指定角色的用户列表
+  async getUnassignedUsers(roleId: string): Promise<UserInfo[]> {
+    const allUsers = await this.getUsers();
+    const assignedUsers = await this.getUsersByRoleId(roleId);
+
+    // 过滤掉已分配的用户
+    const assignedUserIds = assignedUsers.map((user) => user.id);
+    return allUsers.filter((user) => !assignedUserIds.includes(user.id));
+  }
+
+  // 为用户分配角色
   async assignRole(userId: string, roleId: string): Promise<void> {
-    return await api.post(`/users/${userId}/roles/${roleId}`, {});
-  },
+    await api.post(`/users/${userId}/roles/${roleId}`, {});
+  }
 
-  // Remove role from user
+  // 移除用户角色
   async removeRole(userId: string, roleId: string): Promise<void> {
-    return await api.delete(`/users/${userId}/roles/${roleId}`);
-  },
-};
+    await api.delete(`/users/${userId}/roles/${roleId}`);
+  }
+}
+
+export const usersService = new UsersService();

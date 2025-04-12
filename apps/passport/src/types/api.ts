@@ -32,6 +32,10 @@ export interface Role {
   updatedAt?: string;
 }
 
+export interface RoleDetail extends Role {
+  permissions: Permission[];
+}
+
 export interface CreateRoleDto {
   name: string;
   description?: string;
@@ -40,10 +44,6 @@ export interface CreateRoleDto {
 export interface UpdateRoleDto {
   name?: string;
   description?: string;
-}
-
-export interface RoleDetail extends Role {
-  permissions: Permission[];
 }
 
 export interface AssignRoleDto {
@@ -59,6 +59,30 @@ export interface Permission {
   action: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+// User information
+export interface UserInfo {
+  id: string;
+  name: string;
+  email: string;
+  createdAt?: string;
+}
+
+// Role request parameters
+export interface RoleRequest {
+  name: string;
+  description?: string;
+}
+
+// Permission assignment request parameters
+export interface AssignPermissionRequest {
+  permissionId: string;
+}
+
+// User assignment request parameters
+export interface AssignUserRequest {
+  userId: string;
 }
 
 export interface AssignPermissionDto {

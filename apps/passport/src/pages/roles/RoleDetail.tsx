@@ -9,12 +9,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, PlusCircle, Pencil, Trash2 } from "lucide-vue-next";
+import {
+  ArrowLeft,
+  PlusCircle,
+  Pencil,
+  Trash2,
+  UserPlus,
+} from "lucide-vue-next";
 import { rolesService } from "@/services/rolesService";
-import type { RoleDetail as RoleDetailType } from "@/types/api";
+import { usersService } from "@/services/usersService";
+import type { RoleDetail as RoleDetailType, UserInfo } from "@/types/api";
 import { CreateRoleModal } from "./CreateRoleModal";
 import { format } from "date-fns";
 import { AssignPermissionModal } from "./AssignPermissionModal";
+import { AssignUserModal } from "./AssignUserModal";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,20 +40,39 @@ export const RoleDetail = defineComponent({
     const route = useRoute();
     const router = useRouter();
     const role = ref<RoleDetailType | null>(null);
+    const roleUsers = ref<UserInfo[]>([]);
     const loading = ref(true);
+    const loadingUsers = ref(false);
     const error = ref<string | null>(null);
 
     // Modal states
     const isEditModalOpen = ref(false);
     const isAssignPermissionModalOpen = ref(false);
+    const isAssignUserModalOpen = ref(false);
     const isDeleteDialogOpen = ref(false);
     const isPermissionRemoveDialogOpen = ref(false);
+    const isUserRemoveDialogOpen = ref(false);
     const permissionToRemove = ref<string | null>(null);
+    const userToRemove = ref<string | null>(null);
 
     // Format date to yyyy-MM-dd HH:mm:ss format using date-fns
     const formatDate = (dateString?: string) => {
       if (!dateString) return "N/A";
       return format(new Date(dateString), "yyyy-MM-dd HH:mm:ss");
+    };
+
+    // Group permissions by resource
+    const groupedPermissions = () => {
+      if (!role.value || !role.value.permissions) return {};
+
+      const grouped: Record<string, typeof role.value.permissions> = {};
+      role.value.permissions.forEach((permission) => {
+        if (!grouped[permission.resource]) {
+          grouped[permission.resource] = [];
+        }
+        grouped[permission.resource].push(permission);
+      });
+      return grouped;
     };
 
     // Go back to roles list
@@ -70,6 +97,21 @@ export const RoleDetail = defineComponent({
         console.error("Error loading role details:", err);
       } finally {
         loading.value = false;
+      }
+    };
+
+    // Load users assigned to the role
+    const loadRoleUsers = async () => {
+      if (!role.value) return;
+
+      try {
+        loadingUsers.value = true;
+        roleUsers.value = await usersService.getUsersByRoleId(role.value.id);
+      } catch (err: any) {
+        console.error("Error loading role users:", err);
+        error.value = err.message || "加载角色用户失败";
+      } finally {
+        loadingUsers.value = false;
       }
     };
 
@@ -135,42 +177,64 @@ export const RoleDetail = defineComponent({
       }
     };
 
+    // Handle user assignment
+    const handleAssignUser = async (userId: string) => {
+      if (!role.value) return;
+
+      try {
+        await rolesService.assignUser(role.value.id, { userId });
+        await loadRoleUsers();
+        isAssignUserModalOpen.value = false;
+      } catch (err: any) {
+        console.error("Error assigning user:", err);
+        throw err;
+      }
+    };
+
+    // Handle user removal
+    const handleRemoveUser = async () => {
+      if (!role.value || !userToRemove.value) return;
+
+      try {
+        await rolesService.removeUser(role.value.id, userToRemove.value);
+        userToRemove.value = null;
+        isUserRemoveDialogOpen.value = false;
+        await loadRoleUsers();
+      } catch (err: any) {
+        console.error("Error removing user:", err);
+        error.value = err.message || "移除用户失败";
+      }
+    };
+
     // Show confirm dialog before removing permission
     const confirmRemovePermission = (permissionId: string) => {
       permissionToRemove.value = permissionId;
       isPermissionRemoveDialogOpen.value = true;
     };
 
+    // Show confirm dialog before removing user
+    const confirmRemoveUser = (userId: string) => {
+      userToRemove.value = userId;
+      isUserRemoveDialogOpen.value = true;
+    };
+
     // Get existing permission IDs for filtering in the assign modal
     const getExistingPermissionIds = () => {
-      if (!role.value) return [];
+      if (!role.value || !role.value.permissions) return [];
       return role.value.permissions.map((p) => p.id);
     };
 
-    // Group permissions by resource for better display
-    const groupedPermissions = () => {
-      if (!role.value) return {};
-
-      const grouped: Record<string, typeof role.value.permissions> = {};
-      role.value.permissions.forEach((permission) => {
-        if (!grouped[permission.resource]) {
-          grouped[permission.resource] = [];
-        }
-        grouped[permission.resource].push(permission);
-      });
-      return grouped;
-    };
-
-    // Load role details on component mount
+    // Load role details and users on component mount
     onMounted(() => {
       loadRoleDetails();
+      loadRoleUsers();
     });
 
     return () => (
       <div>
         <div class="flex items-center justify-between mb-6">
           <div class="flex items-center">
-            <Button variant="ghost" onClick={goBack} class="mr-2">
+            <Button variant="ghost" class="mr-2" onClick={goBack}>
               <ArrowLeft class="h-4 w-4 mr-1" />
               返回角色列表
             </Button>
@@ -290,6 +354,56 @@ export const RoleDetail = defineComponent({
                 </div>
               )}
             </div>
+
+            {/* Users Section */}
+            <div class="rounded-lg border">
+              <div class="flex items-center justify-between p-4 border-b">
+                <h2 class="text-xl font-semibold">用户管理</h2>
+                <Button
+                  class="flex gap-1 items-center"
+                  onClick={() => (isAssignUserModalOpen.value = true)}
+                >
+                  <UserPlus class="h-4 w-4" />
+                  添加用户
+                </Button>
+              </div>
+
+              {loadingUsers.value ? (
+                <div class="p-8 text-center">加载用户中...</div>
+              ) : roleUsers.value.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>用户名</TableHead>
+                      <TableHead>邮箱</TableHead>
+                      <TableHead>操作</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {roleUsers.value.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell class="font-medium">{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => confirmRemoveUser(user.id)}
+                          >
+                            <Trash2 class="h-4 w-4" />
+                            <span class="sr-only">移除用户</span>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div class="p-8 text-center text-muted-foreground">
+                  该角色暂无任何用户
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           <div class="text-center py-8">未找到角色信息</div>
@@ -316,10 +430,22 @@ export const RoleDetail = defineComponent({
           />
         )}
 
+        {/* Assign User Modal */}
+        {role.value && (
+          <AssignUserModal
+            isOpen={isAssignUserModalOpen.value}
+            onClose={() => (isAssignUserModalOpen.value = false)}
+            onSubmit={handleAssignUser}
+            roleId={role.value.id}
+          />
+        )}
+
         {/* Delete Role Confirmation Dialog */}
         <AlertDialog
           open={isDeleteDialogOpen.value}
-          onOpenChange={(open) => (isDeleteDialogOpen.value = open)}
+          onOpenChange={(isOpen: boolean) =>
+            (isDeleteDialogOpen.value = isOpen)
+          }
         >
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -345,9 +471,9 @@ export const RoleDetail = defineComponent({
         {/* Remove Permission Confirmation Dialog */}
         <AlertDialog
           open={isPermissionRemoveDialogOpen.value}
-          onOpenChange={(open) => {
-            isPermissionRemoveDialogOpen.value = open;
-            if (!open) permissionToRemove.value = null;
+          onOpenChange={(isOpen: boolean) => {
+            isPermissionRemoveDialogOpen.value = isOpen;
+            if (!isOpen) permissionToRemove.value = null;
           }}
         >
           <AlertDialogContent>
@@ -364,6 +490,34 @@ export const RoleDetail = defineComponent({
                 取消
               </AlertDialogCancel>
               <AlertDialogAction onClick={handleRemovePermission}>
+                移除
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Remove User Confirmation Dialog */}
+        <AlertDialog
+          open={isUserRemoveDialogOpen.value}
+          onOpenChange={(isOpen: boolean) => {
+            isUserRemoveDialogOpen.value = isOpen;
+            if (!isOpen) userToRemove.value = null;
+          }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>确认移除用户</AlertDialogTitle>
+              <AlertDialogDescription>
+                确认要从此角色中移除该用户吗？
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel
+                onClick={() => (isUserRemoveDialogOpen.value = false)}
+              >
+                取消
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={handleRemoveUser}>
                 移除
               </AlertDialogAction>
             </AlertDialogFooter>

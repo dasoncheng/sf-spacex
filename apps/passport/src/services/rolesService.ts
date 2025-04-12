@@ -1,54 +1,64 @@
-import { api } from "./api";
 import type {
   Role,
   RoleDetail,
+  RoleRequest,
+  AssignPermissionRequest,
+  AssignUserRequest,
   CreateRoleDto,
   UpdateRoleDto,
-  Permission,
-  AssignPermissionDto,
 } from "@/types/api";
+import { api } from "./api";
 
-export const rolesService = {
-  // Get all roles
+class RolesService {
+  // 获取所有角色列表
   async getRoles(): Promise<Role[]> {
-    return api.get<Role[]>("/roles");
-  },
+    return await api.get<Role[]>("/roles");
+  }
 
-  // Get role by ID
+  // 根据ID获取角色详情
   async getRoleById(id: string): Promise<RoleDetail> {
-    return api.get<RoleDetail>(`/roles/${id}`);
-  },
+    return await api.get<RoleDetail>(`/roles/${id}`);
+  }
 
-  // Create a new role
-  async createRole(role: CreateRoleDto): Promise<Role> {
-    return api.post<Role>("/roles", role);
-  },
+  // 创建新角色
+  async createRole(roleData: CreateRoleDto): Promise<Role> {
+    return await api.post<Role>("/roles", roleData);
+  }
 
-  // Update a role
-  async updateRole(id: string, role: UpdateRoleDto): Promise<Role> {
-    return api.put<Role>(`/roles/${id}`, role);
-  },
+  // 更新角色信息
+  async updateRole(id: string, roleData: UpdateRoleDto): Promise<Role> {
+    return await api.put<Role>(`/roles/${id}`, roleData);
+  }
 
-  // Delete a role
+  // 删除角色
   async deleteRole(id: string): Promise<void> {
-    return api.delete<void>(`/roles/${id}`);
-  },
+    await api.delete(`/roles/${id}`);
+  }
 
-  // Assign a permission to a role
+  // 为角色分配权限
   async assignPermission(
     roleId: string,
-    assignPermissionDto: AssignPermissionDto
+    data: AssignPermissionRequest
   ): Promise<void> {
-    return api.post<void>(`/roles/${roleId}/permissions`, assignPermissionDto);
-  },
+    await api.post(`/roles/${roleId}/permissions`, data);
+  }
 
-  // Remove a permission from a role
+  // 移除角色权限
   async removePermission(roleId: string, permissionId: string): Promise<void> {
-    return api.delete<void>(`/roles/${roleId}/permissions/${permissionId}`);
-  },
+    await api.delete(`/roles/${roleId}/permissions/${permissionId}`);
+  }
 
-  // Get all permissions
-  async getPermissions(): Promise<Permission[]> {
-    return api.get<Permission[]>("/permissions");
-  },
-};
+  // 为角色分配用户
+  async assignUser(roleId: string, data: AssignUserRequest): Promise<void> {
+    // 使用用户服务中的assignRole接口
+    await api.post(`/users/${data.userId}/roles/${roleId}`, {});
+  }
+
+  // 从角色中移除用户
+  async removeUser(roleId: string, userId: string): Promise<void> {
+    // 使用用户服务中的removeRole接口
+    await api.delete(`/users/${userId}/roles/${roleId}`);
+  }
+}
+
+export const rolesService = new RolesService();

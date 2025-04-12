@@ -27,7 +27,7 @@ export const Navigation = defineComponent({
         icon: Package,
       },
       {
-        title: "许可证",
+        title: "卡密",
         path: "/licenses",
         icon: KeyRound,
       },

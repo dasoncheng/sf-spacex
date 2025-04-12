@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: "licenses",
         component: LicensesList,
-        meta: { label: "许可证列表" },
+        meta: { label: "卡密列表" },
       },
       { path: "licenses/:id", component: LicenseDetail },
       {
