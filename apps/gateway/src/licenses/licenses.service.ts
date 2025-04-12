@@ -27,14 +27,11 @@ export class LicensesService {
     const license = await this.prisma.license.create({
       data: {
         LicenseKey: licenseKey,
-        ExpiresAt: createLicenseDto.ExpiresAt,
+        Duration: createLicenseDto.Duration,
       },
     });
 
-    return {
-      ...license,
-      ExpiresAt: license.ExpiresAt || undefined,
-    };
+    return license;
   }
 
   async batchCreate(
@@ -49,13 +46,9 @@ export class LicensesService {
         const license = await prisma.license.create({
           data: {
             LicenseKey: licenseKey,
-            ExpiresAt: batchCreateDto.ExpiresAt,
           },
         });
-        licenses.push({
-          ...license,
-          ExpiresAt: license.ExpiresAt || undefined,
-        });
+        licenses.push(license);
       }
     });
 
@@ -64,10 +57,7 @@ export class LicensesService {
 
   async findAll(): Promise<LicenseResponseDto[]> {
     const licenses = await this.prisma.license.findMany();
-    return licenses.map((license) => ({
-      ...license,
-      ExpiresAt: license.ExpiresAt || undefined,
-    }));
+    return licenses;
   }
 
   async findOne(id: string): Promise<LicenseDetailDto> {
@@ -90,7 +80,6 @@ export class LicensesService {
     // Map to the expected format
     const result: LicenseDetailDto = {
       ...license,
-      ExpiresAt: license.ExpiresAt || undefined,
       activation: license.Activation
         ? {
             Id: license.Activation.Id,

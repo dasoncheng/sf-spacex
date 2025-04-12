@@ -44,8 +44,8 @@ model Application {
 model License {
   Id         String   @id @default(uuid()) // 许可证的唯一标识符，UUID格式
   LicenseKey String   @unique // 许可证密钥，34位字符串，唯一
-  IsUsed     Boolean  @default(false) // 标记许可证是否已被使用
-  ExpiresAt  Int? // 激活时长（以秒为单位），可选字段
+  Duration   Int      @default(-1) // 激活时长（以天为单位），默认为-1，表示永久有效
+  Status     Int      @default(0) // 状态，0表示未激活，1表示已激活
   CreatedAt  DateTime @default(now()) @db.Timestamptz(6) // 记录许可证创建时间，带时区
   UpdatedAt  DateTime @updatedAt @db.Timestamptz(6) // 记录许可证信息的最后更新时间，带时区
 

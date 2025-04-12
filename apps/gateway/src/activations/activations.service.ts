@@ -47,23 +47,26 @@ export class ActivationsService {
         `License with key ${createActivationDto.licenseKey} not found`,
       );
     }
-    if (license.IsUsed) {
+    if (license.Status === 1) {
       throw new BadRequestException(
         `License with key ${createActivationDto.licenseKey} is already in use`,
       );
     }
 
-    // Calculate expiration date based on license's ExpiresAt (duration in seconds)
-    const expiresAt = license.ExpiresAt
-      ? new Date(Date.now() + license.ExpiresAt * 1000)
-      : null;
+    // Calculate expiration date based on license's Duration (in days)
+    let expiresAt: Date | null = null;
+    if (license.Duration > 0) {
+      expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + license.Duration);
+    }
+    // If Duration is -1, it means permanent license (no expiry)
 
     // Create activation in a transaction
     const result = await this.prisma.$transaction(async (prisma) => {
       // Mark license as used
       await prisma.license.update({
         where: { Id: license.Id },
-        data: { IsUsed: true },
+        data: { Status: 1 }, // Set status to used
       });
 
       // Create activation

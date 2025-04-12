@@ -3,7 +3,7 @@ import { IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 export class CreateLicenseDto {
   @IsInt()
   @IsOptional()
-  ExpiresAt?: number; // Duration in seconds
+  Duration?: number; // Duration in days, -1 for permanent
 }
 
 export class BatchCreateLicenseDto {
@@ -13,14 +13,14 @@ export class BatchCreateLicenseDto {
 
   @IsInt()
   @IsOptional()
-  ExpiresAt?: number; // Duration in seconds
+  Duration?: number; // Duration in days, -1 for permanent
 }
 
 export class LicenseResponseDto {
   Id: string;
   LicenseKey: string;
-  IsUsed: boolean;
-  ExpiresAt?: number; // Duration in seconds
+  Duration: number; // Duration in days
+  Status: number; // 0: unused, 1: used
   CreatedAt: Date;
   UpdatedAt: Date;
 }
