@@ -126,9 +126,6 @@ export const LicensesList = defineComponent({
               <PlusCircle class="h-4 w-4" />
               新建卡密
             </Button>
-            <Button variant="outline" onClick={showBatchCreateModal}>
-              批量生成
-            </Button>
           </div>
         </div>
 

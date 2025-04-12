@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-vue-next";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { RegisterModal } from "@/components/RegisterModal";
-import { getUsers } from "@/services/users";
+import { createUser, getUsers } from "@/services/users";
 import type { User } from "@/types/api";
 import { CreateUserModal } from "./CreateUserModal";
 import { format } from "date-fns";
@@ -60,10 +60,7 @@ export const UsersList = defineComponent({
       password: string;
     }) => {
       try {
-        // Call API to create user
-        // 注意：这里需要添加 createUser 函数到导入语句中
-        // 由于现有代码中没有显示 usersService 中的 createUser 实现，这里先保留未修改
-        // 在完整实现中应该是: await createUser(userData);
+        await createUser(userData);
         await loadUsers();
         // Close modal
         isCreateModalOpen.value = false;

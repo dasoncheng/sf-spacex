@@ -97,7 +97,7 @@ export const CreateUserModal = defineComponent({
       <Dialog
         open={props.isOpen}
         onUpdate:open={(va) => {
-          handleClose()
+          handleClose();
         }}
       >
         <DialogContent>
