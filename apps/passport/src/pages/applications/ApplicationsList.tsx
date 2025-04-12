@@ -94,7 +94,7 @@ export const ApplicationsList = defineComponent({
                 <TableRow>
                   <TableHead>名称</TableHead>
                   <TableHead>描述</TableHead>
-                  <TableHead>API Key</TableHead>
+                  <TableHead>AppID</TableHead>
                   <TableHead>创建时间</TableHead>
                   <TableHead class="text-right">查看</TableHead>
                 </TableRow>
@@ -113,7 +113,7 @@ export const ApplicationsList = defineComponent({
                       <TableCell>{app.Description || "N/A"}</TableCell>
                       <TableCell>
                         <code class="bg-muted rounded px-1 py-0.5 text-xs">
-                          {app.AppKey}
+                          {app.Id}
                         </code>
                       </TableCell>
                       <TableCell>{formatDate(app.CreatedAt)}</TableCell>

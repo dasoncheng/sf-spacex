@@ -117,8 +117,8 @@ export interface CreateApplicationDto {
 export interface License {
   Id: string;
   LicenseKey: string;
-  IsUsed: boolean;
-  ExpiresAt?: number; // Duration in seconds
+  Duration: number; // Duration in days, -1 for permanent
+  Status: number; // 0: unused, 1: used
   CreatedAt: string;
   UpdatedAt: string;
 }
@@ -142,12 +142,12 @@ export interface LicenseDetail extends License {
 }
 
 export interface CreateLicenseDto {
-  ExpiresAt?: number;
+  Duration?: number; // Duration in days, -1 for permanent
 }
 
 export interface BatchCreateLicenseDto {
   count: number;
-  ExpiresAt?: number;
+  Duration?: number; // Duration in days, -1 for permanent
 }
 
 // Activation types
