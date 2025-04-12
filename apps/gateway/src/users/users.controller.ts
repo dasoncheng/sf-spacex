@@ -11,12 +11,14 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto, UserDetailDto, UserResponseDto } from './dto/user.dto';
 import { Permission } from '../auth/decorators/permission.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Public()
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
     return this.usersService.create(createUserDto);
