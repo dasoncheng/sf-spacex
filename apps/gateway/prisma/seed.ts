@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { seedRbacData } from '../src/prisma/seeds/rbac.seed';
+import { seedApplicationData } from '../src/prisma/seeds/application.seed';
 
 const prisma = new PrismaClient();
 
@@ -9,7 +10,8 @@ async function main() {
   // 初始化RBAC权限系统
   await seedRbacData(prisma);
 
-  // 后续可以添加其他种子初始化逻辑
+  // 初始化应用列表
+  await seedApplicationData(prisma);
 
   console.log('数据库种子初始化完成！');
 }
