@@ -1,4 +1,5 @@
 import { RoomDetail } from "../models/996box";
+import { environment } from "../utils/environment";
 import { http } from "../utils/http";
 import { toSign } from "../utils/sign";
 
@@ -7,7 +8,11 @@ export function getRoomDetail(params: { live_no: string }) {
   const formData = new FormData();
   const sign = toSign(
     { live_no: params.live_no },
-    { appv: "3.6.0", device: "ios", deviceId: "" }
+    {
+      appv: environment[996].appv,
+      device: environment[996].device,
+      deviceId: "",
+    }
   );
   formData.append("live_no", sign.live_no);
   formData.append("rqtime", sign.rqtime);
@@ -20,9 +25,9 @@ export function getRoomDetail(params: { live_no: string }) {
     {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        device: "ios",
-        appv: "3.6.0",
-        "box-agent": "appv:3.6.0;device:ios;deviceId:;",
+        Device: environment[996].device,
+        Appv: environment[996].appv,
+        "Box-Agent": `appv:${environment[996].appv};device:${environment[996].device};deviceId:;`,
         996: true,
       },
     }
