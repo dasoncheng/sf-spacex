@@ -5,7 +5,9 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { App } from "./app";
 import { InitHardwareId } from "./utils/activate";
+import { initEnvironment } from "./utils/environment";
 async function application() {
+  await initEnvironment();
   // await InitHardwareId();
   const pinia = createPinia();
   const app = createApp(App);
