@@ -1,6 +1,7 @@
 import { defineComponent } from "vue";
 import { Navigation } from "@/components/Navigation";
 import { RouterView } from "vue-router";
+import { UserMenu } from "@/components/UserMenu";
 
 export const MainLayout = defineComponent({
   name: "MainLayout",
@@ -16,8 +17,15 @@ export const MainLayout = defineComponent({
         </div>
 
         {/* Content area */}
-        <main class="flex-1 p-6 overflow-auto">
-          <RouterView />
+        <main class="flex-1 overflow-auto">
+          <header class="border-b">
+            <div class="container flex justify-end items-center pb-2">
+              <UserMenu />
+            </div>
+          </header>
+          <div class="p-6 overflow-auto">
+            <RouterView />
+          </div>
         </main>
       </div>
     );

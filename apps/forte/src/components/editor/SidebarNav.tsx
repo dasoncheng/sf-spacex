@@ -6,7 +6,9 @@ import {
   Layout,
   Image as ImageIcon,
   Film,
+  User,
 } from "lucide-vue-next";
+import { useAuthStore } from "../../stores/auth";
 
 export const SidebarNav = defineComponent({
   name: "SidebarNav",
@@ -19,6 +21,7 @@ export const SidebarNav = defineComponent({
       type: Boolean,
       default: false,
     },
+
     currentMode: {
       type: String,
       default: "gif",
@@ -28,6 +31,10 @@ export const SidebarNav = defineComponent({
   setup(props, { emit }) {
     const settingsPanelRef = ref<HTMLElement | null>(null);
     const settingsButtonRef = ref<HTMLElement | null>(null);
+    const userPanelRef = ref<HTMLElement | null>(null);
+    const userButtonRef = ref<HTMLElement | null>(null);
+    const showUserPanel = ref(false);
+    const authStore = useAuthStore();
 
     const handleSwitchPanel = (panel: "layers" | "backgrounds") => {
       emit("switchPanel", panel);
@@ -53,6 +60,22 @@ export const SidebarNav = defineComponent({
       }
     };
 
+    const handleToggleUserMenu = () => {
+      showUserPanel.value = true;
+    };
+
+    // Handle clicks outside the user panel
+    const handleOutsideUserPanelClick = (e: MouseEvent) => {
+      if (
+        userPanelRef.value &&
+        !userPanelRef.value.contains(e.target as Node) &&
+        userButtonRef.value &&
+        !userButtonRef.value.contains(e.target as Node)
+      ) {
+        showUserPanel.value = false;
+      }
+    };
+
     // Add event listener when settings panel is shown
     watch(
       () => props.showSettingsPanel,
@@ -63,6 +86,20 @@ export const SidebarNav = defineComponent({
           });
         } else {
           document.removeEventListener("click", handleOutsideSettingsClick);
+        }
+      }
+    );
+
+    // Add event listener when user panel is shown
+    watch(
+      () => showUserPanel.value,
+      (value) => {
+        if (value) {
+          nextTick(() => {
+            document.addEventListener("click", handleOutsideUserPanelClick);
+          });
+        } else {
+          document.removeEventListener("click", handleOutsideUserPanelClick);
         }
       }
     );
@@ -145,6 +182,49 @@ export const SidebarNav = defineComponent({
                 >
                   <Film class="h-3.5 w-3.5 mr-2" />
                   GIF 录制模式
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div
+            ref={userButtonRef}
+            class={`flex justify-center py-3 cursor-pointer transition-colors hover:bg-zinc-800/50 border-l-2 ${
+              showUserPanel.value
+                ? "border-l-blue-500 bg-zinc-900/30"
+                : "border-l-transparent"
+            }`}
+            onClick={handleToggleUserMenu}
+            title="用户"
+          >
+            <User
+              class={`h-5 w-5 ${
+                showUserPanel.value
+                  ? "text-blue-400"
+                  : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            />
+          </div>
+          {showUserPanel.value && (
+            <div
+              ref={userPanelRef}
+              class="absolute bottom-10 left-12 w-56 rounded border border-zinc-700/50 bg-zinc-900/95 p-3 shadow-lg backdrop-blur-sm z-20"
+            >
+              <div class="mb-2 text-xs font-medium tracking-wider text-zinc-300">
+                {authStore.currentUser?.Email}
+              </div>
+              <div
+                class="space-y-1.5  hover:bg-blue-600/20"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  authStore.logout();
+                  showUserPanel.value = false;
+                }}
+              >
+                <button
+                  class={`w-full text-left px-2 py-1.5 rounded text-xs flex items-center`}
+                >
+                  退出登录
                 </button>
               </div>
             </div>

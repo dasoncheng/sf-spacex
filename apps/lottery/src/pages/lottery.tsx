@@ -1,4 +1,4 @@
-import { defineComponent, ref, watch, onBeforeUnmount } from "vue";
+import { defineComponent, ref, watch, onBeforeUnmount, onMounted } from "vue";
 import { LotterySettings } from "../components/lottery-settings";
 import { LotteryPreparation } from "../components/lottery-preparation";
 import { LotteryHelp } from "../components/lottery-help";
@@ -13,13 +13,16 @@ import { useLotteryStore, LotteryStatus } from "../stores/lottery";
 import { useSettingsStore } from "../stores/settings";
 import { LotteryMessageVip } from "../components/lottery-message-vip";
 import { LotteryMessageRegular } from "../components/lottery-message-regular";
+import { useAuthStore } from "../stores/auth";
 
 export const Lottery = defineComponent({
   name: "Lottery",
   setup() {
     const lottery = useLotteryStore();
     const settings = useSettingsStore();
+    const authStore = useAuthStore();
     const countdown = ref(settings.settings.chargingTime);
+    const showUserMenu = ref(false);
 
     // Timer for countdown
     let countdownTimer: number | null = null;
@@ -58,17 +61,33 @@ export const Lottery = defineComponent({
       }
     );
 
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (showUserMenu.value && !target.closest(".user-menu-container")) {
+        setShowUserMenu(false);
+      }
+    };
+
+    onMounted(() => {
+      document.addEventListener("click", handleClickOutside);
+    });
+
     // Cleanup on component unmount
     onBeforeUnmount(() => {
       if (countdownTimer) {
         window.clearInterval(countdownTimer);
       }
+      document.removeEventListener("click", handleClickOutside);
     });
 
     // Modal visibility state
     const showSettings = ref(false);
     const showPreparation = ref(false);
     const showHelp = ref(false);
+
+    const setShowUserMenu = (value: boolean) => {
+      showUserMenu.value = value;
+    };
 
     return () => (
       <div class="relative flex flex-col bg-gradient-to-b from-white to-yellow-50 p-2 md:p-4 min-h-screen">
@@ -95,6 +114,54 @@ export const Lottery = defineComponent({
             >
               帮助
             </button>
+
+            {/* 用户按钮 */}
+            <div class="relative user-menu-container">
+              <button
+                class="w-8 h-8 rounded-full bg-gradient-to-r from-orange-200 to-yellow-200 flex items-center justify-center text-orange-700 hover:shadow-md transition-all duration-200 border-2 border-orange-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowUserMenu(!showUserMenu.value);
+                }}
+              >
+                <svg
+                  class="w-6"
+                  viewBox="0 0 1024 1024"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  p-id="1540"
+                  width="200"
+                  height="200"
+                >
+                  <path
+                    d="M309.52 494.12c-1.94 0-3.47 0.28-4.67 0.76 1.63-0.49 3.37-0.76 5.16-0.76L309.52 494.12zM845.13 707.52c0.05-0.99 0.18-1.96 0.39-2.9C845.29 705.05 845.17 705.97 845.13 707.52zM880.86 313.29c0.01-0.04 0.01-0.09 0.01-0.13l0-0.46C880.87 312.9 880.87 313.1 880.86 313.29zM845.11 313.23c0 0.04 0 0.08 0.01 0.12-0.01-0.21-0.01-0.43-0.01-0.65L845.11 313.23zM866.673 849.43c-5.03-37.45-16.03-73.61-32.69-107.48-3.26-6.62-6.71-13.13-10.37-19.51-0.01-0.02-0.02-0.04-0.04-0.06-15.86-26.86-35.32-51.8-58-74.06l-0.01-0.01c-4.93-4.84-10.01-9.56-15.24-14.14-37.29-32.68-80.34-56.91-126.25-71.65 8.31-4.6 16.35-9.76 24.07-15.47 8.79-6.48 17.16-13.68 25.03-21.55 41.39-41.39 64.19-96.43 64.19-154.97 0-58.54-22.8-113.58-64.19-154.97-40.64-40.64-94.44-63.35-151.78-64.17-0.91-0.01-1.82-0.02-2.73-0.02-0.91 0-1.82 0.01-2.73 0.02-57.34 0.82-111.14 23.53-151.78 64.17-41.39 41.39-64.19 96.43-64.19 154.97 0 58.54 22.8 113.58 64.19 154.97 7.87 7.87 16.24 15.07 25.03 21.55 7.72 5.71 15.76 10.87 24.07 15.47-45.91 14.74-88.96 38.97-126.25 71.65-5.23 4.58-10.31 9.3-15.24 14.14-22.7 22.28-42.18 47.24-58.05 74.13-3.66 6.38-7.11 12.89-10.37 19.51-16.66 33.87-27.66 70.03-32.69 107.48-1.61 12 6.81 23.03 18.8 24.64 0.99 0.13 1.98 0.2 2.95 0.2 0.89 0 1.76-0.05 2.63-0.16 8.67-1.89 15.67-8.96 17.03-18.25 10.1-69.32 43.14-132.31 90.63-180.28 56.36-56.95 133.07-92.74 215.97-92.88l0.47 0c82.72 0.28 159.25 36.04 215.5 92.88 47.49 47.97 80.53 110.96 90.63 180.28 1.36 9.27 8.33 16.33 16.98 18.24 0.02 0 0.03 0.01 0.05 0.01 0.87 0.11 1.74 0.16 2.63 0.16 0.97 0 1.96-0.07 2.95-0.2C859.863 872.46 868.283 861.43 866.673 849.43zM518.193 545.86c-0.44 0-0.88 0-1.32-0.01-81.8-0.6-154.73-57.43-174.66-133.66-0.22-0.83-0.44-1.67-0.64-2.51-3.12-12.6-4.78-25.7-4.78-39.15 0-13.45 1.66-26.7 4.78-39.52 0.2-0.86 0.42-1.71 0.64-2.56 20.04-78.14 93.65-140.25 175.98-140.25l0.94 0c82.33 0 155.94 62.11 175.98 140.25 0.22 0.85 0.44 1.7 0.64 2.56 3.12 12.82 4.78 26.07 4.78 39.52 0 13.45-1.66 26.55-4.78 39.15-0.2 0.84-0.42 1.68-0.64 2.51-19.93 76.23-92.86 133.06-174.66 133.66C519.703 545.86 518.953 545.86 518.193 545.86z"
+                    fill="#e16531"
+                    p-id="1541"
+                  ></path>
+                </svg>
+              </button>
+              {showUserMenu.value && (
+                <div class="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-100 z-50">
+                  <div class="py-2 border-b border-gray-100">
+                    <div class="text-sm font-medium text-gray-900 text-center">
+                      {authStore.currentUser?.Email}
+                    </div>
+                  </div>
+                  <div class="py-2 border-b border-gray-100 hover:bg-gray-50">
+                    <div
+                      class="text-sm font-medium text-gray-900 text-center cursor-pointer  py-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        authStore.logout();
+                        setShowUserMenu(false);
+                      }}
+                    >
+                      退出登录
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

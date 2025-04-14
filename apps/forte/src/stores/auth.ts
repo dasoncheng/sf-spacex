@@ -82,6 +82,9 @@ export const useAuthStore = defineStore("auth", () => {
   function logout() {
     error.value = "";
     localStorage.removeItem("account");
+    currentUser.value = null;
+    isAuthenticated.value = false;
+    showLoginDialog.value = true;
   }
 
   // 初始化认证状态
