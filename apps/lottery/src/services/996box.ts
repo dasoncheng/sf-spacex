@@ -23,6 +23,7 @@ export function getRoomDetail(params: { live_no: string }) {
         device: "ios",
         appv: "3.6.0",
         "box-agent": "appv:3.6.0;device:ios;deviceId:;",
+        996: true,
       },
     }
   );
@@ -46,6 +47,9 @@ export function queryLiveRoomDayRankList(liveNo: string) {
       rqrandom: "LFD632683U78YL5R89OCYEYZGJ6KS8SS",
       sign: "7d25965071caa87f9000898b7af1cfb1",
     },
+    headers: {
+      996: true,
+    },
   });
 }
 
@@ -66,6 +70,9 @@ export function queryLiveRoomWeekRankList(liveNo: string) {
       rqtime: "1742459272000",
       rqrandom: "AT2XPJUFP2CT7MTB3AB1Q3EOQONL2G76",
       sign: "d7c8c0eda56de570d443bb24f750b493",
+    },
+    headers: {
+      996: true,
     },
   });
 }
@@ -89,6 +96,9 @@ export function queryLiveRoomOnlineUsers(liveNo: string) {
       rqrandom: "3S2UT49IBV1ULG7S8NKNKME7M333GYHP",
       sign: "a4792ac3e37617df081baa46076b7974",
     },
+    headers: {
+      996: true,
+    },
   });
 }
 
@@ -103,6 +113,9 @@ export function queryLiveRoomUserNum(liveNo: string) {
       rqtime: "1742457821000",
       rqrandom: "M81IAVMX3SJ93BVBFDUK64GTEYE244M1",
       sign: "89c499807e799951053cd6b7592f88c8",
+    },
+    headers: {
+      996: true,
     },
   });
 }
