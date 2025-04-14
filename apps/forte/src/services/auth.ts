@@ -10,5 +10,5 @@ export async function loginByEmail(data: Login) {
 }
 
 export function registerByEmail(data: Login) {
-  http.post("api/users", data);
+  return http.post("api/users", data);
 }

@@ -38,10 +38,13 @@ export const useAuthStore = defineStore("auth", () => {
         const parsedAccount = JSON.parse(account) as AccountInfo;
         currentUser.value = parsedAccount.user;
         isAuthenticated.value = true;
+        showLoginDialog.value = false;
       } catch (error) {
         console.error("Failed to parse account data:", error);
         localStorage.removeItem("account");
       }
+    } else {
+      showLoginDialog.value = true;
     }
   };
 
@@ -53,9 +56,8 @@ export const useAuthStore = defineStore("auth", () => {
       currentUser.value = account.user;
       isAuthenticated.value = true;
       closeLoginDialog();
-      window.location.reload();
     } catch (err: any) {
-      error.value = err.message || "登录失败";
+      error.value = err.response.data.message || "登录失败";
       throw err;
     }
   };
@@ -64,7 +66,7 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       await registerByEmail({ email, password });
     } catch (err: any) {
-      error.value = err.message || "注册失败";
+      error.value = err.response.data.message || "注册失败";
       throw err;
     }
   };
