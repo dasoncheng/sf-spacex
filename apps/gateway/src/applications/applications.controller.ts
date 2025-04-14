@@ -6,6 +6,12 @@ import {
   ApplicationDetailDto,
 } from './dto/application.dto';
 import { Permission } from '../auth/decorators/permission.decorator';
+import {
+  ActivateCurrentUserDto,
+  ActivationStatusBoolDto,
+  CheckCurrentUserActivationDto,
+} from './dto/application.dto';
+import { User } from '../auth/decorators/user.decorator';
 
 @Controller('applications')
 export class ApplicationsController {
@@ -29,5 +35,24 @@ export class ApplicationsController {
   @Permission('applications:read')
   async findOne(@Param('id') id: string): Promise<ApplicationDetailDto> {
     return this.applicationsService.findOne(id);
+  }
+
+  @Get('activate')
+  async checkCurrentUserActivation(
+    @User('userId') userId: string,
+    @Body() checkDto: CheckCurrentUserActivationDto,
+  ): Promise<ActivationStatusBoolDto> {
+    return this.applicationsService.checkCurrentUserActivation(
+      userId,
+      checkDto,
+    );
+  }
+
+  @Post('activate')
+  async activateCurrentUser(
+    @User('userId') userId: string,
+    @Body() activateDto: ActivateCurrentUserDto,
+  ) {
+    return this.applicationsService.activateCurrentUser(userId, activateDto);
   }
 }
