@@ -247,7 +247,7 @@ export const Lottery = defineComponent({
         </div>
 
         <div class="mt-4 text-center text-xs text-gray-500">
-          <p>© 2025 抽奖直播系统 | 技术支持: 盛锋网络</p>
+          <p>© 2025 抽奖直播系统</p>
         </div>
 
         {/* Settings Modal */}
