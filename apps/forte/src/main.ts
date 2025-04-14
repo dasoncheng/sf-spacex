@@ -5,8 +5,10 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { App } from "./app";
 import { loadActConfig } from "./utils/act";
+import { initEnvironment } from "./utils/environment";
 
 async function application() {
+  await initEnvironment();
   await loadActConfig();
   const pinia = createPinia();
   const app = createApp(App);
