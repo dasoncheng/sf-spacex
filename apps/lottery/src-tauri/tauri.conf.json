@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "sf-live",
+  "productName": "sf-lottery",
   "version": "0.1.0",
   "identifier": "com.sf.live.app",
   "build": {
@@ -23,7 +23,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": "nsis",
+    "targets": "all",
     "icon": ["icons/128x128.png", "icons/icon.ico", "icons/icon.png"]
   }
 }

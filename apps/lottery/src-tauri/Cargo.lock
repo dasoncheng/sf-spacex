@@ -3219,7 +3219,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sf-live"
+name = "sf-lottery"
 version = "0.1.0"
 dependencies = [
  "serde",
