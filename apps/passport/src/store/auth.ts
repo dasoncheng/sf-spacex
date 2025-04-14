@@ -73,6 +73,7 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.removeItem("account");
     currentUser.value = null;
     isAuthenticated.value = false;
+    showLoginModal.value = true;
   };
 
   // 初始化认证状态
