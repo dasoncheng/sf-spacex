@@ -13,7 +13,12 @@ export const LoginDialog = defineComponent({
     const handleSubmit = async (e: Event) => {
       e.preventDefault();
 
-      if (!email.value || !password.value) {
+      if (!email.value) {
+        authStore.error = "请输入邮箱";
+        return;
+      }
+      if (!password.value) {
+        authStore.error = "请输入密码";
         return;
       }
 
