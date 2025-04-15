@@ -6,11 +6,15 @@ import {
 } from "../models/auth";
 import { environment } from "../utils/environment";
 import { http } from "../utils/http";
+import MD5 from "crypto-js/md5";
 
 export async function loginByEmail(data: Login) {
   const response: LoginResponse = await http.post(
     `${environment.value?.baseUrl}/auth/login`,
-    data
+    {
+      email: data.email,
+      password: MD5(data.password).toString(),
+    }
   );
   return {
     user: response.user,
@@ -19,7 +23,10 @@ export async function loginByEmail(data: Login) {
 }
 
 export function registerByEmail(data: Login) {
-  return http.post(`${environment.value?.baseUrl}/users`, data);
+  return http.post(`${environment.value?.baseUrl}/users`, {
+    email: data.email,
+    password: MD5(data.password).toString(),
+  });
 }
 
 export function getActivationsStatus(

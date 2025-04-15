@@ -1,3 +1,4 @@
+import MD5 from "crypto-js/md5";
 import { http } from "../utils/http";
 import type { UserInfo, UserDetail, User } from "@/types/api";
 
@@ -21,7 +22,10 @@ export async function createUser(userData: {
   email: string;
   password: string;
 }): Promise<User> {
-  return await http.post("/users", userData);
+  return await http.post("/users", {
+    email: userData.email,
+    password: MD5(userData.password).toString(),
+  });
 }
 // 根据角色ID获取该角色下的用户列表
 export async function getUsersByRoleId(roleId: string): Promise<UserInfo[]> {
