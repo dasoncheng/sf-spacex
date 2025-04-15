@@ -1,23 +1,22 @@
-import { ref } from "vue";
+import { mergeWith } from "lodash-es";
 
-interface Environment {
-  mode: string;
-  baseUrl: string;
-}
-
-const environment = ref<Environment>();
+const environment = {
+  mode: "local",
+  baseUrl: "https://gateway.40mir.com",
+  996: {
+    appv: "3.6.0",
+    device: "ios",
+  },
+};
+type Environment = typeof environment;
 
 const initEnvironment = async () => {
   try {
     const response = await fetch("/environment.json");
     const config: Environment = await response.json();
-    environment.value = config;
-  } catch (error) {
-    environment.value = {
-      mode: "local",
-      baseUrl: "/api",
-    };
-  }
+    mergeWith(environment, config);
+    console.log(environment);
+  } catch (error) {}
 };
 
 export { environment, initEnvironment };

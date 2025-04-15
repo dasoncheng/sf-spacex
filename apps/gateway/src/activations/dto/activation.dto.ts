@@ -43,19 +43,3 @@ export class ValidityResponseDto {
   expiresAt?: Date;
   remainingSeconds?: number;
 }
-
-// DTO for checking current user's activation status
-export class CheckCurrentUserActivationDto {
-  @IsString()
-  @IsNotEmpty()
-  fingerprint: string;
-
-  @IsString()
-  @IsNotEmpty()
-  applicationId: string;
-}
-
-// Simple boolean response for activation status check
-export class ActivationStatusBoolDto {
-  isActive: boolean;
-}

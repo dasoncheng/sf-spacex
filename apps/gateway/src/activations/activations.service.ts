@@ -6,8 +6,6 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import {
   ActivationResponseDto,
-  ActivationStatusBoolDto,
-  CheckCurrentUserActivationDto,
   CreateActivationDto,
   ValidityCheckDto,
   ValidityResponseDto,
@@ -121,45 +119,5 @@ export class ActivationsService {
       remainingSeconds:
         isValid && remainingSeconds ? remainingSeconds : undefined,
     };
-  }
-
-  /**
-   * Check if the current user has a valid activation for an application with specific fingerprint
-   */
-  async checkCurrentUserActivation(
-    userId: string,
-    checkDto: CheckCurrentUserActivationDto,
-  ): Promise<ActivationStatusBoolDto> {
-    // Check if application exists
-    const application = await this.prisma.application.findUnique({
-      where: { Id: checkDto.applicationId },
-    });
-    if (!application) {
-      throw new NotFoundException(
-        `Application with ID ${checkDto.applicationId} not found`,
-      );
-    }
-
-    // Find activation record for the current user with matching fingerprint
-    const activation = await this.prisma.activation.findFirst({
-      where: {
-        UserId: userId,
-        ApplicationId: checkDto.applicationId,
-        Fingerprint: checkDto.fingerprint,
-      },
-    });
-
-    // If no activation found, return false
-    if (!activation) {
-      return { isActive: false };
-    }
-
-    const now = new Date();
-    const expiresAt = activation.ExpiresAt;
-
-    // If no expiration date or expiration date is in the future, it's valid
-    const isActive = !expiresAt || expiresAt > now;
-
-    return { isActive };
   }
 }

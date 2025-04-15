@@ -1,9 +1,12 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { get } from 'lodash-es';
-import { RequestWithUser } from '../interfaces/authenticated-user.interface';
+import {
+  AuthenticatedUser,
+  RequestWithUser,
+} from '../interfaces/authenticated-user.interface';
 
 export const User = createParamDecorator(
-  (path: string, ctx: ExecutionContext) => {
+  (path: keyof AuthenticatedUser, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<RequestWithUser>();
     const user = request.user;
 

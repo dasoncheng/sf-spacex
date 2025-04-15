@@ -27,3 +27,34 @@ export class ApplicationDetailDto extends ApplicationResponseDto {
     expiresAt: Date | null;
   }[];
 }
+
+// DTO for checking current user's activation status
+export class CheckCurrentUserActivationDto {
+  @IsString()
+  @IsNotEmpty()
+  fingerprint: string;
+
+  @IsString()
+  @IsNotEmpty()
+  applicationId: string;
+}
+
+// Simple boolean response for activation status check
+export class ActivationStatusBoolDto {
+  isActive: boolean;
+}
+
+// DTO for activating current user
+export class ActivateCurrentUserDto {
+  @IsString()
+  @IsNotEmpty()
+  fingerprint: string;
+
+  @IsString()
+  @IsNotEmpty()
+  licenseKey: string;
+
+  @IsString()
+  @IsNotEmpty()
+  applicationId: string;
+}
