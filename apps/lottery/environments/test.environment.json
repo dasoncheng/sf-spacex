@@ -1,4 +1,5 @@
 {
   "mode": "test",
-  "baseUrl": ""
+  "baseUrl": "",
+  "applicationId": "0cc19a75-0d0f-4692-95b6-f2b88db96da6"
 }

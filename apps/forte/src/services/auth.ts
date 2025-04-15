@@ -10,7 +10,7 @@ import MD5 from "crypto-js/md5";
 
 export async function loginByEmail(data: Login) {
   const response: LoginResponse = await http.post(
-    `${environment.value?.baseUrl}/auth/login`,
+    `${environment.baseUrl}/auth/login`,
     {
       email: data.email,
       password: MD5(data.password).toString(),
@@ -23,7 +23,7 @@ export async function loginByEmail(data: Login) {
 }
 
 export function registerByEmail(data: Login) {
-  return http.post(`${environment.value?.baseUrl}/users`, {
+  return http.post(`${environment.baseUrl}/users`, {
     email: data.email,
     password: MD5(data.password).toString(),
   });
@@ -32,14 +32,11 @@ export function registerByEmail(data: Login) {
 export function getActivationsStatus(
   params: CheckCurrentUserActivationDto
 ): Promise<{ isActive: boolean }> {
-  return http.get(`${environment.value?.baseUrl}/applications/activate`, {
+  return http.get(`${environment.baseUrl}/applications/activate`, {
     params,
   });
 }
 
 export function ceateActivation(params: CreateActivationDto) {
-  return http.post(
-    `${environment.value?.baseUrl}/applications/activate`,
-    params
-  );
+  return http.post(`${environment.baseUrl}/applications/activate`, params);
 }

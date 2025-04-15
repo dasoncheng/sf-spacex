@@ -9,7 +9,7 @@ const getAccount = () => {
   }
 };
 
-const noTokenUrlPatterns = ["api/v3/Room/detail", "/auth/login"];
+const noTokenUrlPatterns = ["api/v3/Room/detail", "/auth/login", "/users"];
 
 const http = axios.create();
 
