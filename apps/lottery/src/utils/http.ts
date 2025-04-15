@@ -2,6 +2,13 @@ import axios, { RawAxiosRequestHeaders } from "axios";
 import { mergeWith, omit } from "lodash-es";
 import { environment } from "./environment";
 
+const getAccount = () => {
+  const account = localStorage.getItem("account");
+  if (account) {
+    return JSON.parse(account);
+  }
+};
+
 const noTokenUrlPatterns = ["api/v3/Room/detail", "/auth/login"];
 
 const http = axios.create();
@@ -19,12 +26,14 @@ http.interceptors.request.use((config) => {
     );
   }
 
+  const account = getAccount();
   if (
     !noTokenUrlPatterns.some((pattern) => {
       return config.url?.includes(pattern);
-    })
+    }) &&
+    account.token
   ) {
-    // config.headers.Authorization = `Bearer ${account.token}`;
+    config.headers.Authorization = `Bearer ${account.token}`;
   }
   return config;
 });
