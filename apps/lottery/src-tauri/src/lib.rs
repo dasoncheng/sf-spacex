@@ -27,6 +27,7 @@ fn get_device_identifiers() -> Result<String, String> {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_http::init())
         .invoke_handler(tauri::generate_handler![greet, get_device_identifiers,])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

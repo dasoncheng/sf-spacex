@@ -1,8 +1,8 @@
 import { defineComponent, ref } from "vue";
 import { X, LoaderCircle } from "lucide-vue-next";
-import { getRoomDetail } from "../services/996box";
 import { useLotteryStore } from "../stores/lottery";
 import { useRoomStore } from "../stores/room";
+import { getRoomDetail } from "../services/996-fetch";
 
 export const LotteryPreparation = defineComponent({
   name: "LotteryPreparation",
