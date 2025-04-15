@@ -10,6 +10,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { CreateLicenseDto, BatchCreateLicenseDto } from "@/types/api";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+enum Validity {
+  Always = "always",
+  Interval = "interval",
+}
 
 export const CreateLicensesModal = defineComponent({
   name: "CreateLicensesModal",
@@ -36,39 +42,35 @@ export const CreateLicensesModal = defineComponent({
     },
   },
   setup(props) {
-    const ExpiresAt = ref();
+    const Duration = ref();
     const count = ref();
 
     const isSubmitting = ref(false);
     const error = ref<string | null>(null);
+    const validity = ref(Validity.Always);
 
     // Reset form
     const resetForm = () => {
-      ExpiresAt.value = "";
+      Duration.value = "";
       count.value = "";
       error.value = null;
     };
     const validateForm = () => {
       error.value = null;
-      if (!count.value && !props.isSingle) {
-        error.value = "Count is required";
+      if (validity.value === Validity.Interval && !Duration.value) {
+        error.value = "Duration is required";
         return false;
       }
       return true;
     };
+
     // Handle form submission
     const handleSubmit = async () => {
       if (!validateForm()) return;
       try {
-        isSubmitting.value = true;
-        props.isSingle
-          ? await props.onSubmit({
-              ExpiresAt: ExpiresAt.value,
-            })
-          : await props.onSublitBatch({
-              ExpiresAt: ExpiresAt.value,
-              count: count.value,
-            });
+        await props.onSubmit({
+          Duration: Duration.value,
+        });
         resetForm();
       } catch (err: any) {
         error.value = err.message || "Failed to create License";
@@ -76,6 +78,23 @@ export const CreateLicensesModal = defineComponent({
       } finally {
         isSubmitting.value = false;
       }
+      // try {
+      //   isSubmitting.value = true;
+      //   props.isSingle
+      //     ? await props.onSubmit({
+      //         ExpiresAt: ExpiresAt.value,
+      //       })
+      //     : await props.onSublitBatch({
+      //         ExpiresAt: ExpiresAt.value,
+      //         count: count.value,
+      //       });
+      //   resetForm();
+      // } catch (err: any) {
+      //   error.value = err.message || "Failed to create License";
+      //   console.error("Error in form submission:", err);
+      // } finally {
+      //   isSubmitting.value = false;
+      // }
     };
 
     // Handle modal close
@@ -122,11 +141,37 @@ export const CreateLicensesModal = defineComponent({
                   />
                 </div>
               )}
-
               <div class="grid gap-2">
-                <Label for="ExpiresAt">有效期</Label>
-                <Input id="ExpiresAt" type="number" v-model={ExpiresAt.value} />
+                <RadioGroup
+                  v-model={validity.value}
+                  class="flex space-x-4"
+                  onUpdate:modelValue={() => {
+                    if (validity.value === Validity.Always) {
+                      error.value = "";
+                      Duration.value = undefined;
+                    }
+                  }}
+                >
+                  <div class="flex items-center space-x-2">
+                    <RadioGroupItem id="r1" value="always" />
+                    <Label for="r1">永久有效</Label>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <RadioGroupItem id="r2" value="interval" />
+                    <Label for="r2">有效期</Label>
+                  </div>
+                </RadioGroup>
               </div>
+              {validity.value === Validity.Interval && (
+                <div class="grid gap-2">
+                  <Input
+                    id="Duration"
+                    type="number"
+                    v-model={Duration.value}
+                    placeholder="请输入有效期（以天为单位）"
+                  />
+                </div>
+              )}
             </div>
 
             <DialogFooter>

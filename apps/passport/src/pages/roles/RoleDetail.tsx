@@ -248,7 +248,7 @@ export const RoleDetail = defineComponent({
             <h1 class="text-2xl font-bold">角色详情</h1>
           </div>
 
-          {role.value && (
+          {/* {role.value && (
             <div class="flex gap-2">
               <Button
                 variant="outline"
@@ -265,7 +265,7 @@ export const RoleDetail = defineComponent({
                 删除
               </Button>
             </div>
-          )}
+          )} */}
         </div>
 
         {loading.value ? (
@@ -303,13 +303,13 @@ export const RoleDetail = defineComponent({
             <div class="rounded-lg border">
               <div class="flex items-center justify-between p-4 border-b">
                 <h2 class="text-xl font-semibold">权限管理</h2>
-                <Button
+                {/* <Button
                   class="flex gap-1 items-center"
                   onClick={() => (isAssignPermissionModalOpen.value = true)}
                 >
                   <PlusCircle class="h-4 w-4" />
                   添加权限
-                </Button>
+                </Button> */}
               </div>
 
               {Object.entries(groupedPermissions()).length > 0 ? (
@@ -366,13 +366,13 @@ export const RoleDetail = defineComponent({
             <div class="rounded-lg border">
               <div class="flex items-center justify-between p-4 border-b">
                 <h2 class="text-xl font-semibold">用户管理</h2>
-                <Button
+                {/* <Button
                   class="flex gap-1 items-center"
                   onClick={() => (isAssignUserModalOpen.value = true)}
                 >
                   <UserPlus class="h-4 w-4" />
                   添加用户
-                </Button>
+                </Button> */}
               </div>
 
               {loadingUsers.value ? (

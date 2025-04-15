@@ -160,15 +160,19 @@ export const LicensesList = defineComponent({
                       <TableCell>
                         <span
                           class={
-                            license.IsUsed
+                            license.Status
                               ? "inline-flex items-center rounded-full bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20"
                               : "inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
                           }
                         >
-                          {license.IsUsed ? "已使用" : "可用"}
+                          {license.Status ? "已使用" : "可用"}
                         </span>
                       </TableCell>
-                      <TableCell>{formatDuration(license.ExpiresAt)}</TableCell>
+                      <TableCell>
+                        {license.Duration > 0
+                          ? `${license.Duration}天`
+                          : "永久有效"}
+                      </TableCell>
                       <TableCell>{formatDate(license.CreatedAt)}</TableCell>
                     </TableRow>
                   ))
