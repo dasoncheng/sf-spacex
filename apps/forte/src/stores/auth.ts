@@ -8,6 +8,7 @@ import {
 } from "../services/auth";
 import { AccountInfo, User } from "../models/auth";
 import { DeviceIdentificationCache } from "../utils/activate";
+import { environment } from "../utils/environment";
 
 export const useAuthStore = defineStore("auth", () => {
   const showLoginDialog = ref(false);
@@ -22,12 +23,13 @@ export const useAuthStore = defineStore("auth", () => {
     const activation = JSON.parse(
       localStorage.getItem("activation") ?? "false"
     );
-    if (account && activation) {
+    if (account) {
       try {
         const parsedAccount = JSON.parse(account) as AccountInfo;
         currentUser.value = parsedAccount.user;
         isAuthenticated.value = true;
         showLoginDialog.value = false;
+        showActiveDialog.value = !activation;
       } catch (error) {
         console.error("Failed to parse account data:", error);
       }
@@ -48,7 +50,7 @@ export const useAuthStore = defineStore("auth", () => {
         isAuthenticated.value = true;
         getActivationsStatus({
           fingerprint: DeviceIdentificationCache.hardware_id,
-          applicationId: "0cc19a75-0d0f-4692-95b6-f2b88db96da6",
+          applicationId: environment.applicationId,
         }).then((active) => {
           if (!active.isActive) {
             showActiveDialog.value = true;
@@ -80,13 +82,13 @@ export const useAuthStore = defineStore("auth", () => {
   const activation = async (licenseKey: string) => {
     try {
       await ceateActivation({
-        applicationId: "0cc19a75-0d0f-4692-95b6-f2b88db96da6",
+        applicationId: environment.applicationId,
         fingerprint: DeviceIdentificationCache.hardware_id,
         licenseKey: licenseKey,
       });
       localStorage.setItem("activation", "true");
       showActiveDialog.value = false;
-      showLoginDialog.value = true;
+      showLoginDialog.value = false;
     } catch (err: any) {
       error.value = err.response.data.message || "激活失败";
       throw err;

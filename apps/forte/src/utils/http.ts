@@ -9,7 +9,7 @@ const getAccount = () => {
 
 const http = axios.create();
 
-const noTokenUrlPatterns = ["auth/login"];
+const noTokenUrlPatterns = ["auth/login", "/users"];
 
 http.interceptors.request.use((config) => {
   const account = getAccount();
