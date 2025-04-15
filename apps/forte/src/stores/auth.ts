@@ -1,31 +1,17 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { loginByEmail, registerByEmail } from "../services/auth";
-
-export interface LoginResponse {
-  user: User;
-  accessToken: string;
-}
-
-export interface User {
-  Id: string;
-  Email: string;
-  CreatedAt: string;
-  UpdatedAt: string;
-}
-export interface Login {
-  email: string;
-  password: string;
-}
-
-export interface AccountInfo {
-  user: User;
-  token: string;
-}
+import {
+  ceateActivation,
+  getActivationsStatus,
+  loginByEmail,
+  registerByEmail,
+} from "../services/auth";
+import { AccountInfo, User } from "../models/auth";
+import { DeviceIdentificationCache } from "../utils/activate";
 
 export const useAuthStore = defineStore("auth", () => {
   const showLoginDialog = ref(false);
-  const showRegisterModal = ref(false);
+  const showActiveDialog = ref(false);
   const currentUser = ref<User | null>(null);
   const isAuthenticated = ref(false);
   const error = ref("");
@@ -33,7 +19,10 @@ export const useAuthStore = defineStore("auth", () => {
   // 初始化认证状态
   const initAuth = () => {
     const account = localStorage.getItem("account");
-    if (account) {
+    const activation = JSON.parse(
+      localStorage.getItem("activation") ?? "false"
+    );
+    if (account && activation) {
       try {
         const parsedAccount = JSON.parse(account) as AccountInfo;
         currentUser.value = parsedAccount.user;
@@ -41,32 +30,65 @@ export const useAuthStore = defineStore("auth", () => {
         showLoginDialog.value = false;
       } catch (error) {
         console.error("Failed to parse account data:", error);
-        localStorage.removeItem("account");
       }
     } else {
       showLoginDialog.value = true;
+      localStorage.removeItem("account");
+      localStorage.removeItem("activation");
     }
   };
 
+  // 登录
   const login = async (email: string, password: string) => {
-    try {
-      error.value = "";
-      const account = await loginByEmail({ email, password });
-      localStorage.setItem("account", JSON.stringify(account));
-      currentUser.value = account.user;
-      isAuthenticated.value = true;
-      closeLoginDialog();
-    } catch (err: any) {
-      error.value = err.response.data.message || "登录失败";
-      throw err;
-    }
+    error.value = "";
+    loginByEmail({ email, password })
+      .then((account) => {
+        localStorage.setItem("account", JSON.stringify(account));
+        currentUser.value = account.user;
+        isAuthenticated.value = true;
+        getActivationsStatus({
+          fingerprint: DeviceIdentificationCache.hardware_id,
+          applicationId: "0cc19a75-0d0f-4692-95b6-f2b88db96da6",
+        }).then((active) => {
+          if (!active.isActive) {
+            showActiveDialog.value = true;
+            showLoginDialog.value = false;
+            localStorage.setItem("activation", "false");
+          } else {
+            error.value = "";
+            showActiveDialog.value = false;
+            showLoginDialog.value = false;
+            localStorage.setItem("activation", "true");
+          }
+        });
+      })
+      .catch((err) => {
+        error.value = err.response.data.message || "登录失败";
+        throw err;
+      });
   };
-
+  // 注册
   const register = async (email: string, password: string) => {
     try {
       await registerByEmail({ email, password });
     } catch (err: any) {
       error.value = err.response.data.message || "注册失败";
+      throw err;
+    }
+  };
+  // 激活
+  const activation = async (licenseKey: string) => {
+    try {
+      await ceateActivation({
+        applicationId: "0cc19a75-0d0f-4692-95b6-f2b88db96da6",
+        fingerprint: DeviceIdentificationCache.hardware_id,
+        licenseKey: licenseKey,
+      });
+      localStorage.setItem("activation", "true");
+      showActiveDialog.value = false;
+      showLoginDialog.value = true;
+    } catch (err: any) {
+      error.value = err.response.data.message || "激活失败";
       throw err;
     }
   };
@@ -82,6 +104,7 @@ export const useAuthStore = defineStore("auth", () => {
   function logout() {
     error.value = "";
     localStorage.removeItem("account");
+    localStorage.removeItem("activation");
     currentUser.value = null;
     isAuthenticated.value = false;
     showLoginDialog.value = true;
@@ -92,7 +115,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   return {
     showLoginDialog,
-    showRegisterModal,
+    showActiveDialog,
     currentUser,
     isAuthenticated,
     error,
@@ -101,5 +124,6 @@ export const useAuthStore = defineStore("auth", () => {
     register,
     login,
     logout,
+    activation,
   };
 });

@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Query } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import {
   CreateApplicationDto,
@@ -31,21 +31,21 @@ export class ApplicationsController {
     return this.applicationsService.findAll();
   }
 
-  @Get(':id')
-  @Permission('applications:read')
-  async findOne(@Param('id') id: string): Promise<ApplicationDetailDto> {
-    return this.applicationsService.findOne(id);
-  }
-
   @Get('activate')
   async checkCurrentUserActivation(
     @User('userId') userId: string,
-    @Body() checkDto: CheckCurrentUserActivationDto,
+    @Query() checkDto: CheckCurrentUserActivationDto,
   ): Promise<ActivationStatusBoolDto> {
     return this.applicationsService.checkCurrentUserActivation(
       userId,
       checkDto,
     );
+  }
+
+  @Get(':id')
+  @Permission('applications:read')
+  async findOne(@Param('id') id: string): Promise<ApplicationDetailDto> {
+    return this.applicationsService.findOne(id);
   }
 
   @Post('activate')

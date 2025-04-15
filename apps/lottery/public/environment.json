@@ -1,6 +1,6 @@
 {
   "mode": "prod",
-  "baseUrl": "https://gateway.40mir.com",
+  "baseUrl": "/api",
   "996": {
     "appv": "3.6.0",
     "device": "ios"

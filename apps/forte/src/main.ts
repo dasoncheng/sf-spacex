@@ -5,10 +5,12 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { App } from "./app";
 import { loadActConfig } from "./utils/act";
+import { InitHardwareId } from "./utils/activate";
 import { initEnvironment } from "./utils/environment";
 
 async function application() {
   await initEnvironment();
+  // await InitHardwareId();
   await loadActConfig();
   const pinia = createPinia();
   const app = createApp(App);
