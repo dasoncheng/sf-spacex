@@ -118,7 +118,7 @@ export const ApplicationDetail = defineComponent({
             </div>
 
             {/* Users Table */}
-            <div class="rounded-lg border">
+            {/* <div class="rounded-lg border">
               <h2 class="text-xl font-semibold p-4">用户</h2>
               <Table>
                 <TableHeader>
@@ -161,7 +161,7 @@ export const ApplicationDetail = defineComponent({
                   )}
                 </TableBody>
               </Table>
-            </div>
+            </div> */}
           </div>
         ) : (
           <div class="text-center py-8">未找到应用</div>
