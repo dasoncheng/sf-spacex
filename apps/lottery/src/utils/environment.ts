@@ -16,7 +16,6 @@ const initEnvironment = async () => {
     const response = await fetch("/environment.json");
     const config: Environment = await response.json();
     mergeWith(environment, config);
-    console.log(environment);
   } catch (error) {}
 };
 
