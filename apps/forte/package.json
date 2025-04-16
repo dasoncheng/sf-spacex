@@ -10,6 +10,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@sf-spacex/applications": "workspace:^",
     "@tauri-apps/api": "^2.4.0",
     "@tauri-apps/plugin-opener": "^2",
     "axios": "^1.8.4",

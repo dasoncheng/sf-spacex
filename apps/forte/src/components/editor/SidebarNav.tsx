@@ -8,7 +8,11 @@ import {
   Film,
   User,
 } from "lucide-vue-next";
+import { Setting, Activation } from "@sf-spacex/applications/widgets";
 import { useAuthStore } from "../../stores/auth";
+import { DeviceIdentificationCache } from "../../utils/activate";
+import { environment } from "../../utils/environment";
+import { ceateActivation, getActivationsStatus } from "../../services/auth";
 
 export const SidebarNav = defineComponent({
   name: "SidebarNav",
@@ -35,6 +39,10 @@ export const SidebarNav = defineComponent({
     const userButtonRef = ref<HTMLElement | null>(null);
     const showUserPanel = ref(false);
     const authStore = useAuthStore();
+    const showSetting = ref(false);
+    const showActive = ref(false);
+    const expiresAt = ref<string | null>(null);
+    const activatedAt = ref<string | null>(null);
 
     const handleSwitchPanel = (panel: "layers" | "backgrounds") => {
       emit("switchPanel", panel);
@@ -103,6 +111,23 @@ export const SidebarNav = defineComponent({
         }
       }
     );
+
+    const getActivition = async () => {
+      const { ExpiresAt, ActivatedAt } = await getActivationsStatus({
+        fingerprint: DeviceIdentificationCache.hardware_id,
+        applicationId: environment.applicationId,
+      });
+      expiresAt.value = ExpiresAt;
+      activatedAt.value = ActivatedAt;
+    };
+
+    const activeSubmit = async (licenseKey: string) => {
+      return await ceateActivation({
+        applicationId: environment.applicationId,
+        fingerprint: DeviceIdentificationCache.hardware_id,
+        licenseKey: licenseKey,
+      }).then(() => (showActive.value = false));
+    };
 
     return () => (
       <div class="w-12 flex flex-col bg-zinc-900/60">
@@ -210,7 +235,15 @@ export const SidebarNav = defineComponent({
               ref={userPanelRef}
               class="absolute bottom-10 left-12 w-56 rounded border border-zinc-700/50 bg-zinc-900/95 p-3 shadow-lg backdrop-blur-sm z-20"
             >
-              <div class="mb-2 text-xs font-medium tracking-wider text-zinc-300">
+              <div
+                class="w-full text-left px-2 py-1.5 rounded text-xs flex items-center hover:bg-blue-600/20"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // authStore.logout();
+                  showSetting.value = true;
+                  showUserPanel.value = false;
+                }}
+              >
                 {authStore.currentUser?.Email}
               </div>
               <div
@@ -228,6 +261,25 @@ export const SidebarNav = defineComponent({
                 </button>
               </div>
             </div>
+          )}
+
+          {showSetting.value && (
+            <Setting
+              theme="dark"
+              onClose={() => (showSetting.value = false)}
+              user={authStore.currentUser}
+              activation={authStore.activationStatus}
+              onGetActivition={getActivition}
+              expiresAt={expiresAt.value}
+              activatedAt={activatedAt.value}
+            />
+          )}
+
+          {showActive.value && (
+            <Activation
+              onSubmit={(licenseKey: string) => activeSubmit(licenseKey)}
+              onCancel={() => (showActive.value = false)}
+            />
           )}
         </div>
       </div>

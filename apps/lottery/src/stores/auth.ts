@@ -16,11 +16,12 @@ export const useAuthStore = defineStore("auth", () => {
   const currentUser = ref<User | null>(null);
   const isAuthenticated = ref(false);
   const error = ref("");
+  const activationStatus = ref(false);
 
   // 初始化认证状态
   const initAuth = () => {
     const account = localStorage.getItem("account");
-    const activation = JSON.parse(
+    activationStatus.value = JSON.parse(
       localStorage.getItem("activation") ?? "false"
     );
     if (account) {
@@ -29,7 +30,7 @@ export const useAuthStore = defineStore("auth", () => {
         currentUser.value = parsedAccount.user;
         isAuthenticated.value = true;
         showLoginDialog.value = false;
-        showActiveDialog.value = !activation;
+        showActiveDialog.value = !activationStatus.value;
       } catch (error) {
         console.error("Failed to parse account data:", error);
       }
@@ -121,6 +122,7 @@ export const useAuthStore = defineStore("auth", () => {
     currentUser,
     isAuthenticated,
     error,
+    activationStatus,
     openLoginDialog,
     closeLoginDialog,
     register,

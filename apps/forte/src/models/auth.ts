@@ -28,3 +28,8 @@ export interface CreateActivationDto {
   licenseKey: string;
   applicationId: string;
 }
+export interface ActivationStatusBoolDto {
+  isActive: boolean;
+  ActivatedAt: string | null;
+  ExpiresAt: string | null;
+}

@@ -42,6 +42,8 @@ export class CheckCurrentUserActivationDto {
 // Simple boolean response for activation status check
 export class ActivationStatusBoolDto {
   isActive: boolean;
+  ActivatedAt: Date | null;
+  ExpiresAt: Date | null;
 }
 
 // DTO for activating current user

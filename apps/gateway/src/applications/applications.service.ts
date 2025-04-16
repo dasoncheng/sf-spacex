@@ -98,7 +98,11 @@ export class ApplicationsService {
 
     // If no activation found, return false
     if (!activation) {
-      return { isActive: false };
+      return {
+        isActive: false,
+        ActivatedAt: null,
+        ExpiresAt: null,
+      };
     }
 
     const now = new Date();
@@ -107,7 +111,11 @@ export class ApplicationsService {
     // If no expiration date or expiration date is in the future, it's valid
     const isActive = !expiresAt || expiresAt > now;
 
-    return { isActive };
+    return {
+      isActive,
+      ActivatedAt: activation.ActivatedAt,
+      ExpiresAt: activation.ExpiresAt,
+    };
   }
 
   /**
