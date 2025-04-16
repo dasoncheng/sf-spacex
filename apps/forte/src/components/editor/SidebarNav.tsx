@@ -126,7 +126,7 @@ export const SidebarNav = defineComponent({
         applicationId: environment.applicationId,
         fingerprint: DeviceIdentificationCache.hardware_id,
         licenseKey: licenseKey,
-      }).then(() => (showActive.value = false));
+      });
     };
 
     return () => (
@@ -236,10 +236,9 @@ export const SidebarNav = defineComponent({
               class="absolute bottom-10 left-12 w-56 rounded border border-zinc-700/50 bg-zinc-900/95 p-3 shadow-lg backdrop-blur-sm z-20"
             >
               <div
-                class="w-full text-left px-2 py-1.5 rounded text-xs flex items-center hover:bg-blue-600/20"
+                class="w-full text-left px-2 py-1.5 rounded text-xs flex items-center hover:bg-blue-600/20 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
-                  // authStore.logout();
                   showSetting.value = true;
                   showUserPanel.value = false;
                 }}
@@ -272,6 +271,7 @@ export const SidebarNav = defineComponent({
               onGetActivition={getActivition}
               expiresAt={expiresAt.value}
               activatedAt={activatedAt.value}
+              onActive={() => (showActive.value = true)}
             />
           )}
 

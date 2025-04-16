@@ -48,7 +48,7 @@ export const Activation = defineComponent({
                 <input
                   v-model={licenseKey.value}
                   placeholder="请输入激活码"
-                  class="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                 />
               </div>
 
