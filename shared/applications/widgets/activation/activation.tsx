@@ -8,7 +8,7 @@ export const Activation = defineComponent({
       required: true,
     },
   },
-  emits: ["cancel"],
+  emits: ["cancel", "refresh"],
   setup(props, { emit }) {
     const licenseKey = ref("");
     const error = ref("");
@@ -20,6 +20,7 @@ export const Activation = defineComponent({
       }
       try {
         await props.onSubmit(licenseKey.value);
+        emit("refresh");
         emit("cancel");
       } catch (err: any) {
         error.value = err.response.data.message || "Failed to active";

@@ -82,7 +82,7 @@ const ActivationInfo = defineComponent({
     const error = ref("");
 
     const always = computed(() => {
-      if (props.activation && props.expiresAt === null) {
+      if (props.activation && !props.expiresAt) {
         return true;
       }
       return false;

@@ -150,7 +150,7 @@ export class ApplicationsService {
       );
     }
 
-    // Check if user already has an activation for this application
+    // // Check if user already has an activation for this application
     const existingActivation = await this.prisma.activation.findFirst({
       where: {
         UserId: userId,
@@ -158,19 +158,33 @@ export class ApplicationsService {
       },
     });
 
-    if (existingActivation) {
-      throw new BadRequestException(
-        `User already has an active license for this application`,
-      );
-    }
+    // if (existingActivation) {
+    //   throw new BadRequestException(
+    //     `User already has an active license for this application`,
+    //   );
+    // }
 
     // Calculate expiration date based on license's Duration (in days)
-    let expiresAt: Date | null = null;
-    if (license.Duration > 0) {
-      expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + license.Duration);
-    }
+    // let expiresAt: Date | null = null;
+    // if (license.Duration > 0) {
+    //   expiresAt = new Date();
+    //   expiresAt.setDate(expiresAt.getDate() + license.Duration);
+    // }
     // If Duration is -1, it means permanent license (no expiry)
+    let expiresAt: Date | null = null;
+    if (!existingActivation) {
+      if (license.Duration > 0) {
+        expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + license.Duration);
+      }
+    } else {
+      if (existingActivation.ExpiresAt) {
+        if (license.Duration > 0) {
+          expiresAt = existingActivation.ExpiresAt;
+          expiresAt.setDate(expiresAt.getDate() + license.Duration);
+        }
+      }
+    }
 
     // Create activation in a transaction
     const result = await this.prisma.$transaction(async (prisma) => {
@@ -180,16 +194,32 @@ export class ApplicationsService {
         data: { Status: 1 }, // Set status to used
       });
 
-      // Create activation
-      return prisma.activation.create({
-        data: {
-          UserId: userId,
-          ApplicationId: activateDto.applicationId,
-          LicenseId: license.Id,
-          Fingerprint: activateDto.fingerprint,
-          ExpiresAt: expiresAt,
-        },
-      });
+      if (!existingActivation) {
+        // Create activation
+        return prisma.activation.create({
+          data: {
+            UserId: userId,
+            ApplicationId: activateDto.applicationId,
+            LicenseId: license.Id,
+            Fingerprint: activateDto.fingerprint,
+            ExpiresAt: expiresAt,
+          },
+        });
+      } else {
+        // update activation
+        return prisma.activation.update({
+          where: {
+            Id: existingActivation.Id,
+          },
+          data: {
+            UserId: userId,
+            ApplicationId: activateDto.applicationId,
+            LicenseId: license.Id,
+            Fingerprint: activateDto.fingerprint,
+            ExpiresAt: expiresAt,
+          },
+        });
+      }
     });
   }
 }

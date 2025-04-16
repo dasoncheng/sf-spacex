@@ -279,6 +279,7 @@ export const SidebarNav = defineComponent({
             <Activation
               onSubmit={(licenseKey: string) => activeSubmit(licenseKey)}
               onCancel={() => (showActive.value = false)}
+              onRefresh={() => getActivition()}
             />
           )}
         </div>
