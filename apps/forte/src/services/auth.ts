@@ -1,4 +1,5 @@
 import {
+  ActivationStatusBoolDto,
   CheckCurrentUserActivationDto,
   CreateActivationDto,
   Login,
@@ -31,7 +32,7 @@ export function registerByEmail(data: Login) {
 
 export function getActivationsStatus(
   params: CheckCurrentUserActivationDto
-): Promise<{ isActive: boolean }> {
+): Promise<ActivationStatusBoolDto> {
   return http.get(`${environment.baseUrl}/applications/activate`, {
     params,
   });

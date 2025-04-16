@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ESNext", "DOM"],
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": [
+    "./env.d.ts",
+    "widgets/**/*.tsx",
+    "widgets/**/*.ts",
+    "utils/**/*.tsx",
+    "utils/**/*.ts",
+    "models/**/*.tsx",
+    "models/**/*.ts",
+    "*.ts"
+  ]
+}

@@ -323,7 +323,7 @@ export const RoleDetail = defineComponent({
                             <TableRow>
                               <TableHead>权限名称</TableHead>
                               <TableHead>描述</TableHead>
-                              <TableHead>操作</TableHead>
+                              {/* <TableHead>操作</TableHead> */}
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -335,7 +335,7 @@ export const RoleDetail = defineComponent({
                                 <TableCell>
                                   {permission.description || permission.action}
                                 </TableCell>
-                                <TableCell>
+                                {/* <TableCell>
                                   <Button
                                     variant="ghost"
                                     size="sm"
@@ -346,7 +346,7 @@ export const RoleDetail = defineComponent({
                                     <Trash2 class="h-4 w-4" />
                                     <span class="sr-only">移除权限</span>
                                   </Button>
-                                </TableCell>
+                                </TableCell> */}
                               </TableRow>
                             ))}
                           </TableBody>

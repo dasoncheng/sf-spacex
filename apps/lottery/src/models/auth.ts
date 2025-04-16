@@ -28,3 +28,9 @@ export interface CreateActivationDto {
   licenseKey: string;
   fingerprint: string;
 }
+
+export interface ActivationStatusBoolDto {
+  isActive: boolean;
+  ActivatedAt: string | null;
+  ExpiresAt: string | null;
+}

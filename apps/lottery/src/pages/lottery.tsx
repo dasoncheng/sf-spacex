@@ -1,4 +1,5 @@
 import { defineComponent, ref, watch, onBeforeUnmount, onMounted } from "vue";
+import { Setting, Activation } from "@sf-spacex/applications/widgets";
 import { LotterySettings } from "../components/lottery-settings";
 import { LotteryPreparation } from "../components/lottery-preparation";
 import { LotteryHelp } from "../components/lottery-help";
@@ -14,6 +15,9 @@ import { useSettingsStore } from "../stores/settings";
 import { LotteryMessageVip } from "../components/lottery-message-vip";
 import { LotteryMessageRegular } from "../components/lottery-message-regular";
 import { useAuthStore } from "../stores/auth";
+import { ceateActivation, getActivationsStatus } from "../services/auth";
+import { environment } from "../utils/environment";
+import { DeviceIdentificationCache } from "../utils/activate";
 
 export const Lottery = defineComponent({
   name: "Lottery",
@@ -23,6 +27,10 @@ export const Lottery = defineComponent({
     const authStore = useAuthStore();
     const countdown = ref(settings.settings.chargingTime);
     const showUserMenu = ref(false);
+    const showSetting = ref(false);
+    const showActive = ref(false);
+    const expiresAt = ref<string | null>(null);
+    const activatedAt = ref<string | null>(null);
 
     // Timer for countdown
     let countdownTimer: number | null = null;
@@ -88,6 +96,22 @@ export const Lottery = defineComponent({
     const setShowUserMenu = (value: boolean) => {
       showUserMenu.value = value;
     };
+    const getActivition = async () => {
+      const { ExpiresAt, ActivatedAt } = await getActivationsStatus({
+        fingerprint: DeviceIdentificationCache.hardware_id,
+        applicationId: environment.applicationId,
+      });
+      expiresAt.value = ExpiresAt;
+      activatedAt.value = ActivatedAt;
+    };
+
+    const activeSubmit = async (licenseKey: string) => {
+      return await ceateActivation({
+        applicationId: environment.applicationId,
+        fingerprint: DeviceIdentificationCache.hardware_id,
+        licenseKey: licenseKey,
+      });
+    };
 
     return () => (
       <div class="relative flex flex-col bg-gradient-to-b from-white to-yellow-50 p-2 md:p-4 min-h-screen">
@@ -142,8 +166,15 @@ export const Lottery = defineComponent({
               </button>
               {showUserMenu.value && (
                 <div class="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-100 z-50">
-                  <div class="py-2 border-b border-gray-100">
-                    <div class="text-sm font-medium text-gray-900 text-center">
+                  <div class="py-2 border-b border-gray-100 hover:bg-gray-50">
+                    <div
+                      class="text-sm font-medium text-gray-900 text-center cursor-pointer  py-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showSetting.value = true;
+                        setShowUserMenu(false);
+                      }}
+                    >
                       {authStore.currentUser?.Email}
                     </div>
                   </div>
@@ -160,6 +191,25 @@ export const Lottery = defineComponent({
                     </div>
                   </div>
                 </div>
+              )}
+              {showSetting.value && (
+                <Setting
+                  onClose={() => (showSetting.value = false)}
+                  user={authStore.currentUser}
+                  activation={authStore.activationStatus}
+                  onGetActivition={getActivition}
+                  expiresAt={expiresAt.value}
+                  activatedAt={activatedAt.value}
+                  onActive={() => (showActive.value = true)}
+                />
+              )}
+
+              {showActive.value && (
+                <Activation
+                  onSubmit={(licenseKey: string) => activeSubmit(licenseKey)}
+                  onCancel={() => (showActive.value = false)}
+                  onRefresh={() => getActivition()}
+                />
               )}
             </div>
           </div>
