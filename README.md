@@ -4,14 +4,15 @@
 
 ```
 
-
 ## dev
 
 ```bash
-pnpm install 
+pnpm install
 ## gateway
-pnpm --filter sf-gateway generate
+pnpm --filter sf-gateway generate # 第一次运行时执行
+
 pnpm --filter sf-gateway start
+
 ## passport
 pnpm --filter sf-passport dev
 ```
